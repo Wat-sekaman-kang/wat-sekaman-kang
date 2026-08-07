@@ -849,24 +849,61 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-laoMaroonDark text-white border-t-4 border-laoGold pt-16 pb-8 px-4">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-            <div class="md:col-span-2">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-laoGold text-laoMaroon flex items-center justify-center font-bold text-xl shadow">
-                        <i class="fa-solid fa-gopuram"></i>
-                    </div>
-                    <span class="font-lao-serif text-2xl font-bold text-laoGold">ວັດເຊກະໝານກາງ</span>
-                </div>
-                <p class="text-amber-100/80 text-sm leading-relaxed max-w-md mb-6 font-sans">
-                    ສູນລວມຈິດໃຈ, ທຳມະທານ ແລະ ມໍລະດົກທາງພຸດທະສາສະໜາ ລຸ່ມນ້ຳເຊກະໝານ. ຂໍໃຫ້ຜົນບຸນອັນເກີດຈາກການສຶກສາ ແລະ ຮ່ວມສ້າງບຸນ ຈົ່ງດົນບັນດານໃຫ້ທ່ານມີຄວາມສຸກ ຄວາມຈະເລີນ.
-                </p>
-                <div class="flex space-x-4 text-laoGold text-xl">
-                    <button onclick="showToast('ຕິດຕາມ Facebook ເພດ ວັດເຊກະໝານກາງ', 'ໂຊຊຽວມີເດຍ', 'fa-facebook')" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all"><i class="fa-brands fa-facebook-f"></i></button>
-                    <button onclick="showToast('ຕິດຕາມ YouTube ວັດເຊກະໝານກາງ', 'ໂຊຊຽວມີເດຍ', 'fa-youtube')" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all"><i class="fa-brands fa-youtube"></i></button>
-                    <button onclick="showToast('ຕິດຕໍ່ WhatsApp +856 20 5555 1234', 'ໂຊຊຽວມີເດຍ', 'fa-whatsapp')" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all"><i class="fa-brands fa-whatsapp"></i></button>
-                </div>
-            </div>
+<footer class="bg-laoMaroonDark text-white border-t-4 border-laoGold pt-16 pb-8 px-4">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+    
+    <!-- Column 1: Info -->
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-laoMaroon text-laoMaroon flex items-center justify-center font-bold text-xl shadow">
+          <i class="fa-solid fa-gopuram"></i>
+        </div>
+        <span class="font-lao-serif text-2xl font-bold text-laoGold">ວັດເຊກະໝານກາງ</span>
+      </div>
+      <p class="text-amber-100/80 text-sm leading-relaxed max-w-md font-sans">
+        ສູນລວມຈິດໃຈ, ທຳມະທານ ແລະ ມໍລະດົກທາງພຸດທະສາສະໜາ ລຸ່ມນ້ຳເຊກະໝານ. ຂໍໃຫ້ຜົນບຸນອັນເກີດຈາກການສຶກສາ ແລະ ຮ່ວມສ້າງບຸນ ຈົ່ງດົນບັນດານໃຫ້ທ່ານມີຄວາມສຸກ ຄວາມຈະເລີນ.
+      </p>
+      
+      <!-- Social Media Links -->
+      <div class="flex space-x-4 mt-6 text-xl">
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/your-page-url" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+        <!-- YouTube -->
+        <a href="https://www.youtube.com/@your-channel-url" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all">
+          <i class="fa-brands fa-youtube"></i>
+        </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/8562097671723" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-laoMaroon flex items-center justify-center hover:bg-laoGold hover:text-laoMaroon transition-all">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h4 class="font-lao-serif text-laoGold font-bold text-lg mb-4">ລິ້ງຄ໌ດ່ວນ</h4>
+      <ul class="space-y-2 text-amber-100/80 text-sm">
+        <li><a href="#home" class="hover:text-laoGold transition-colors">ໜ້າຫຼັກ</a></li>
+        <li><a href="#history" class="hover:text-laoGold transition-colors">ປະວັດຄວາມເປັນມາ</a></li>
+        <li><a href="#sacred" class="hover:text-laoGold transition-colors">ສິ່ງສັກສິດ</a></li>
+        <li><a href="#spiritual-merit" class="hover:text-laoGold transition-colors">ໄຕ້ທຽນອອນໄລນ໌</a></li>
+        <li><a href="#events" class="hover:text-laoGold transition-colors">ກິດຈະກຳ-ງານບຸນ</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Contact/Extra -->
+    <div>
+      <h4 class="font-lao-serif text-laoGold font-bold text-lg mb-4">ຄຳອຸທິດສ່ວນບຸນ</h4>
+      <p class="text-xs text-amber-100/80 leading-relaxed italic border-l-2 border-laoGold pl-3">
+      "ອິດທັງ ເມ ຍາຕີນັງ ໂຫຕຸ ສຸຂິຕາ ໂຫນຕຸ ຍາຕະໂຍ"
+ຂໍສ່ວນບຸນນີ້ຈົ່ງສຳເລັດແກ່ຍາດຕິພີ່ນ້ອງທັງຫຼາຍຂອງຂ້າພະເຈົ້າ ຂໍໃຫ້ຍາດຕິພີ່ນ້ອງທັງຫຼາຍຈົ່ງມີຄວາມສຸກ.
+      </p>
+    </div>
+
+  </div>
+</footer>
 
             <div>
                 <h4 class="font-lao-serif text-laoGold font-bold text-lg mb-4">ລິ້ງຄ໌ດ່ວນ</h4>
