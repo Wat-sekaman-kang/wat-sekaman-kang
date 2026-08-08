@@ -1,11 +1,11 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="lo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ຄັງຮູບພາບກິດຈະກຳ - ວັດເຊກະໝານກາງ</title>
     
-    <!-- ดึงฟอนต์ภาษาลาว Noto Sans Lao -->
+    <!-- นำเข้า Google Fonts ภาษาลาว Noto Sans Lao -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
             line-height: 1.6;
         }
 
-        /* แถบเมนูด้านบน (Header) */
+        /* แถบ Header นำทางด้านบน */
         .site-header {
             background-color: #8b0000; /* สีแดงเลือดหมูตามธีมวัด */
             color: #ffffff;
@@ -58,6 +58,7 @@
 
         .btn-home:hover {
             background-color: #f1c40f;
+            transform: translateY(-2px);
         }
 
         /* โครงสร้างเนื้อหาหลัก */
@@ -80,6 +81,7 @@
 
         .section-header p {
             color: #666;
+            font-size: 1rem;
         }
 
         .divider {
@@ -90,7 +92,7 @@
             border-radius: 2px;
         }
 
-        /* ตารางจัดวางรูปภาพ (Grid) */
+        /* ตารางจัดวางรูปภาพแบบ Responsive (Grid) */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -102,12 +104,13 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #eee;
         }
 
         .gallery-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
 
         .card-img-wrapper {
@@ -121,6 +124,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-card:hover .card-img-wrapper img {
+            transform: scale(1.05);
         }
 
         .card-content {
@@ -137,6 +145,7 @@
         .card-desc {
             font-size: 0.85rem;
             color: #666;
+            line-height: 1.5;
         }
 
         /* ท้ายหน้าเว็บ (Footer) */
@@ -160,7 +169,7 @@
 </head>
 <body>
 
-    <!-- แถบด้านบน -->
+    <!-- Header ด้านบน -->
     <header class="site-header">
         <a href="index.html" class="site-logo">ວັດເຊກະໝານກາງ - WAT XEKAMAN KANG</a>
         <a href="index.html" class="btn-home">← ກັບຄືນໜ້າຫຼັກ</a>
@@ -176,36 +185,37 @@
 
         <div class="gallery-grid">
 
-            <!-- การ์ดรูปที่ 1 (เปลี่ยนชื่อไฟล์ตรง images/ชื่อไฟล์.jpg ให้ตรงกับรูปในโฟลเดอร์ images) -->
+            <!-- การ์ดรูปที่ 1: อิเวนต์หนึ่ง -->
             <div class="gallery-card">
                 <div class="card-img-wrapper">
-                    <img src="images/รูปที่1.jpg" onerror="this.src='wat-logo.jpg'">
+                    <!-- ดึงรูปจากโฟลเดอร์ images/events/event1.jpg -->
+                    <img src="images/events/event1.jpg" alt="ງານບຸນ ອີເວັ້ນ 1" onerror="this.src='wat-logo.jpg'">
                 </div>
                 <div class="card-content">
-                    <h3 class="card-title">ງານບຸນປະເພນີ</h3>
-                    <p class="card-desc">ຮູບພາບພິທີຕັກບາດ ແລະ ຟັງທຳມະເທສະໜາ</p>
+                    <h3 class="card-title">ງານບຸນ ອີເວັ້ນ 1</h3>
+                    <p class="card-desc">ຮູບພາບກິດຈະກຳ ແລະ ບັນຍາກາດງານບຸນ ອີເວັ້ນ 1 ວັດເຊກະໝານກາງ</p>
                 </div>
             </div>
 
-            <!-- การ์ดรูปที่ 2 -->
+            <!-- การ์ดรูปที่ 2: อิเวนต์สอง (ถ้าอัปโหลด event2.jpg) -->
             <div class="gallery-card">
                 <div class="card-img-wrapper">
-                    <img src="images/รูปที่2.jpg" onerror="this.src='wat-logo.jpg'">
+                    <img src="images/events/event2.jpg" alt="ງານບຸນ ອີເວັ້ນ 2" onerror="this.src='wat-logo.jpg'">
                 </div>
                 <div class="card-content">
-                    <h3 class="card-title">ງານບຸນມະຫາຊາດ & ກະຖິນ</h3>
-                    <p class="card-desc">ບັນຍາກາດຄວາມສັດທາຂອງພຸດທະສາສະນິກະຊົນ</p>
+                    <h3 class="card-title">ງານບຸນ ອີເວັ້ນ 2</h3>
+                    <p class="card-desc">ບັນຍາກາດຄວາມສັດທາ ແລະ ກິດຈະກຳທາງສາສະໜາ</p>
                 </div>
             </div>
 
-            <!-- การ์ดรูปที่ 3 -->
+            <!-- การ์ดรูปที่ 3: อิเวนต์สาม (ถ้าอัปโหลด event3.jpg) -->
             <div class="gallery-card">
                 <div class="card-img-wrapper">
-                    <img src="images/รูปที่3.jpg" onerror="this.src='wat-logo.jpg'">
+                    <img src="images/events/event3.jpg" alt="ງານບຸນ ອີເວັ້ນ 3" onerror="this.src='wat-logo.jpg'">
                 </div>
                 <div class="card-content">
-                    <h3 class="card-title">ກິດຈະກຳປະຕິບັດທຳ</h3>
-                    <p class="card-desc">ການຮ່ວມສູດມົນ ແລະ ນັ່ງສະມາທິຂອງຊາວບ້ານ</p>
+                    <h3 class="card-title">ງານບຸນ ອີເວັ້ນ 3</h3>
+                    <p class="card-desc">ພາບການຮ່ວມສູດມົນ ແລະ ປະຕິບັດທຳຂອງຊາວບ້ານ</p>
                 </div>
             </div>
 
