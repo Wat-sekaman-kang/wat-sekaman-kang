@@ -1,0 +1,221 @@
+!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຄັງຮູບພາບກິດຈະກຳ - ວັດເຊກະໝານກາງ</title>
+    
+    <!-- ดึงฟอนต์ภาษาลาว Noto Sans Lao -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* แถบเมนูด้านบน (Header) */
+        .site-header {
+            background-color: #8b0000; /* สีแดงเลือดหมูตามธีมวัด */
+            color: #ffffff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .site-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .btn-home {
+            background-color: #d4af37; /* สีทอง */
+            color: #000000;
+            padding: 8px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home:hover {
+            background-color: #f1c40f;
+        }
+
+        /* โครงสร้างเนื้อหาหลัก */
+        .main-container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header h1 {
+            color: #8b0000;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #666;
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background-color: #d4af37;
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* ตารางจัดวางรูปภาพ (Grid) */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+            border: 1px solid #eee;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background-color: #eee;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* ท้ายหน้าเว็บ (Footer) */
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #222;
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แถบด้านบน -->
+    <header class="site-header">
+        <a href="index.html" class="site-logo">ວັດເຊກະໝານກາງ - WAT XEKAMAN KANG</a>
+        <a href="index.html" class="btn-home">← ກັບຄືນໜ້າຫຼັກ</a>
+    </header>
+
+    <!-- เนื้อหาแกลเลอรี -->
+    <main class="main-container">
+        <div class="section-header">
+            <h1>ຄັງຮູບພາບກິດຈະກຳ & ງານບຸນ</h1>
+            <p>ປະມວນພາບຄວາມປະທັບໃຈ ແລະ ງານບຸນປະເພນີ ວັດເຊກະໝານກາງ</p>
+            <div class="divider"></div>
+        </div>
+
+        <div class="gallery-grid">
+
+            <!-- การ์ดรูปที่ 1 (เปลี่ยนชื่อไฟล์ตรง images/ชื่อไฟล์.jpg ให้ตรงกับรูปในโฟลเดอร์ images) -->
+            <div class="gallery-card">
+                <div class="card-img-wrapper">
+                    <img src="images/รูปที่1.jpg" onerror="this.src='wat-logo.jpg'">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">ງານບຸນປະເພນີ</h3>
+                    <p class="card-desc">ຮູບພາບພິທີຕັກບາດ ແລະ ຟັງທຳມະເທສະໜາ</p>
+                </div>
+            </div>
+
+            <!-- การ์ดรูปที่ 2 -->
+            <div class="gallery-card">
+                <div class="card-img-wrapper">
+                    <img src="images/รูปที่2.jpg" onerror="this.src='wat-logo.jpg'">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">ງານບຸນມະຫາຊາດ & ກະຖິນ</h3>
+                    <p class="card-desc">ບັນຍາກາດຄວາມສັດທາຂອງພຸດທະສາສະນິກະຊົນ</p>
+                </div>
+            </div>
+
+            <!-- การ์ดรูปที่ 3 -->
+            <div class="gallery-card">
+                <div class="card-img-wrapper">
+                    <img src="images/รูปที่3.jpg" onerror="this.src='wat-logo.jpg'">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">ກິດຈະກຳປະຕິບັດທຳ</h3>
+                    <p class="card-desc">ການຮ່ວມສູດມົນ ແລະ ນັ່ງສະມາທິຂອງຊາວບ້ານ</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ท้ายหน้าเว็บ -->
+    <footer class="site-footer">
+        <p>© ວັດເຊກະໝານກາງ - Wat Sekaman Kang. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
