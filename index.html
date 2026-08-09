@@ -871,7 +871,437 @@
     </div>
 </div>
 
-<script>
+<script> 
+        /* ===================================================
+           Web Audio API Sound Engine (Bell & Gong Synthesizer)
+           =================================================== */
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Resonant Temple Bell Sound
+        function playBellSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                
+                // Fundamental frequencies for lao temple bell harmonics
+                const freqs = [261.63, 523.25, 784.88, 1046.50, 1567.98];
+                freqs.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.25 / (index + 1), now + 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.start(now);
+                    osc.stop(now + 4.5);
+                });
+                showToast("ສຽງລະຄັງວັດດັງຂຶ້ນ... ສາທຸ", "ສຽງສັກສິດ", "fa-bell");
+            } catch (e) {
+                console.log('Audio Context Error:', e);
+            }
+        }
+
+        // Deep Resonant Gong Sound
+        function playGongSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(110, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 2.0);
+                
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.6, now + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 5.0);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 5.0);
+
+                showToast("ສຽງຄ້ອງວັດດັງຂຶ້ນ... ສາທຸ", "ສຽງສັກສິດ", "fa-drum");
+            } catch (e) {
+                console.log('Audio Context Error:', e);
+            }
+        }
+
+        /* ===================================================
+           STREAMING_CHUNK:Managing modal dialogs and notification toast system...
+           =================================================== */
+        function showToast(message, title = "ແຈ້ງເຕືອນ", icon = "fa-circle-info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'bg-laoMaroon text-white p-4 rounded-2xl shadow-2xl border border-laoGold flex items-center gap-3 transform translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
+            
+            toast.innerHTML = `
+                <div class="w-10 h-10 rounded-xl bg-laoGold/20 border border-laoGold/50 flex items-center justify-center text-laoGold text-lg shrink-0">
+                    <i class="fa-solid ${icon}"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h5 class="font-lao-serif font-bold text-laoGold text-sm">${title}</h5>
+                    <p class="text-xs text-amber-100 font-sans truncate">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            // Remove after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function openModal(title, contentHtml) {
+            document.getElementById('modalTitle').querySelector('span').innerText = title;
+            document.getElementById('modalBody').innerHTML = contentHtml;
+            const modal = document.getElementById('appModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('modalBox').classList.remove('scale-95');
+                document.getElementById('modalBox').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            document.getElementById('modalBox').classList.remove('scale-100');
+            document.getElementById('modalBox').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('appModal').classList.add('hidden');
+            }, 200);
+        }
+
+        function openGalleryModal(imgSrc, title, description) {
+            const content = `
+                <div class="space-y-4">
+                    <div class="rounded-2xl overflow-hidden border border-laoGold/40 shadow-md max-h-[50vh]">
+                        <img src="${imgSrc}" alt="${title}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold font-lao-serif text-laoMaroon mb-1">${title}</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed font-sans">${description}</p>
+                    </div>
+                </div>
+            `;
+            openModal(title, content);
+        }
+
+        function openMapModal() {
+            const content = `
+                <div class="space-y-4 text-center">
+                    <div class="bg-amber-100 p-6 rounded-2xl border border-amber-300">
+                        <i class="fa-solid fa-map-location-dot text-5xl text-laoMaroon mb-3"></i>
+                        <h4 class="font-bold text-lg text-laoMaroon font-lao-serif">ແຜນທີ່ຕຳແໜ່ງ ວັດເຊກະໝານກາງ</h4>
+                        <p class="text-xs text-gray-600 mt-2">ບ້ານເຊກະໝານ, ເມືອງ ແລະ ແຂວງໃນເຂດລຸ່ມນ້ຳເຊກະໝານ, ສປປ ລາວ</p>
+                    </div>
+                    <p class="text-sm text-gray-700">ທ່ານສາມາດເດີນທາງຕາມເສັ້ນທາງຫຼັກເລກທີ 16A ແຄມນ້ຳເຊກະໝານ. ມີປ້າຍບອກທາງຈະແຈ້ງຕະຫຼອດເສັ້ນທາງ.</p>
+                </div>
+            `;
+            openModal("ແຜນທີ່ ແລະ ການເດີນທາງ", content);
+        }
+
+        function openReceiptGeneratorModal() {
+            const content = `
+                <form onsubmit="generateReceiptSubmit(event)" class="space-y-4">
+                    <p class="text-xs text-gray-600">ກະລຸນາປ້ອນຂໍ້ມູນເພື່ອອອກໃບອະນຸໂມທະນາບຸນດິຈິທັລ ສຳລັບເກັບໄວ້ເປັນສິຣິມົງຄົນ:</p>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">ຊື່ ແລະ ນາມສະກຸນ ຜູ້ບໍລິຈາກ</label>
+                        <input type="text" id="receiptName" required placeholder="ຕົວຢ່າງ: ທ່ານ ສົມໄຊ ວົງສາ" class="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:border-laoGold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">ຈຳນວນເງິນບໍລິຈາກ (ກີບ / ບາດ)</label>
+                        <input type="text" id="receiptAmount" required placeholder="ຕົວຢ່າງ: 100,000 ກີບ" class="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:border-laoGold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">ວັດຖຸປະສົງການເຮັດບຸນ</label>
+                        <select id="receiptPurpose" class="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:border-laoGold focus:outline-none">
+                            <option value="ບູລະນະພຣະອຸໂບສົດ (ສິມ)">ບູລະນະພຣະອຸໂບສົດ (ສິມ)</option>
+                            <option value="ຄ່ານ້ຳ-ຄ່າໄຟຟ້າວັດ">ຄ່ານ້ຳ-ຄ່າໄຟຟ້າວັດ</option>
+                            <option value="ທຶນການສຶກສາພຣະພິກຂຸ-ສາມະເນນ">ທຶນການສຶກສາພຣະພິກຂຸ-ສາມະເນນ</option>
+                            <option value="ກອງທຶນສາທາລະນະກຸສົນ">ກອງທຶນສາທາລະນະກຸສົນ</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full gold-gradient text-laoMaroon font-bold py-3 rounded-xl shadow hover:scale-[1.01] transition-transform">
+                        ສ້າງໃບອະນຸໂມທະນາບຸນ
+                    </button>
+                </form>
+            `;
+            openModal("ອອກໃບອະນຸໂມທະນາບຸນ", content);
+        }
+
+        function generateReceiptSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('receiptName').value;
+            const amount = document.getElementById('receiptAmount').value;
+            const purpose = document.getElementById('receiptPurpose').value;
+            const dateStr = new Date().toLocaleDateString('lo-LA', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const content = `
+                <div class="border-4 border-laoGold p-6 rounded-2xl bg-amber-50/80 text-center relative font-lao-serif">
+                    <div class="text-laoMaroon font-bold text-2xl mb-1">ໃບອະນຸໂມທະນາບຸນ</div>
+                    <div class="text-xs text-laoGoldDark font-semibold uppercase mb-4">WAT XEKAMAN KANG MERIT CERTIFICATE</div>
+                    <p class="text-xs text-gray-600 mb-6">ຂໍອະນຸໂມທະນາບຸນຂອບໃຈ ນຳ:</p>
+                    <p class="text-2xl font-bold text-laoMaroon mb-2">${name}</p>
+                    <p class="text-sm text-gray-700 mb-4">ໄດ້ຮ່ວມບໍລິຈາກເຮັດບຸນ ຈຳນວນເງິນ: <strong class="text-laoMaroon">${amount}</strong></p>
+                    <p class="text-xs text-gray-600 mb-6">ເພື່ອວັດຖຸປະສົງ: <strong>${purpose}</strong></p>
+                    <div class="border-t border-laoGold/40 pt-4 mt-4 flex justify-between items-center text-xs text-gray-500 font-sans">
+                        <span>ວັນທີ: ${dateStr}</span>
+                        <span class="font-bold text-laoMaroon">ວັດເຊກະໝານກາງ</span>
+                    </div>
+                </div>
+            `;
+            openModal("ໃບອະນຸໂມທະນາບຸນດິຈິທັລ", content);
+            showToast("ສ້າງໃບອະນຸໂມທະນາບຸນສຳເລັດ! ສາທຸ", "ສຳເລັດ", "fa-certificate");
+        }
+
+        /* ===================================================
+           STREAMING_CHUNK:Implementing virtual merit state and local storage...
+           =================================================== */
+        const DEFAULT_DEVOTEES = [
+            { name: "ທ່ານ ສົມພອນ + ຄອບຄົວ", wish: "ຂໍໃຫ້ຄອບຄົວມີຄວາມສຸກ ສຸຂະພາບແຂງແຮງ", time: "5 ນາທີກ່ອນ", lotus: "🌸" },
+            { name: "ນາງ ມະລີວັນ", wish: "ຂໍໃຫ້ການຄ້າຂາຍຈະເລີນຮຸ່ງເຮືອງ", time: "18 ນາທີກ່ອນ", lotus: "🪷" },
+            { name: "ທ່ານ ບຸນມີ", wish: "ຂໍໃຫ້ແຄ້ວຄາດປອດໄພຈາກໂຣກໄພທັງປວງ", time: "1 ຊົ່ວໂມງກ່ອນ", lotus: "🌼" }
+        ];
+
+        function getDevoteeList() {
+            const stored = localStorage.getItem('xekaman_devotees');
+            if (stored) {
+                try { return JSON.parse(stored); } catch (e) {}
+            }
+            return DEFAULT_DEVOTEES;
+        }
+
+        function saveDevoteeList(list) {
+            localStorage.setItem('xekaman_devotees', JSON.stringify(list));
+        }
+
+        function renderDevotees() {
+            const devotees = getDevoteeList();
+            const container = document.getElementById('recentDevoteesList');
+            container.innerHTML = devotees.map(d => `
+                <div class="bg-laoMaroon/70 p-3 rounded-xl border border-laoGold/20 flex justify-between items-center gap-2">
+                    <div class="min-w-0">
+                        <span class="font-bold text-laoGold block text-xs sm:text-sm font-lao-serif truncate">${d.lotus || '🪷'} ${d.name}</span>
+                        <p class="text-amber-100/80 text-xs font-light truncate">${d.wish}</p>
+                    </div>
+                    <span class="text-[10px] text-amber-200/60 shrink-0 bg-laoMaroonDark/60 px-2 py-1 rounded-md border border-laoGold/10">${d.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function submitVirtualMerit(e) {
+            e.preventDefault();
+            const name = document.getElementById('devoteeName').value.trim();
+            const wish = document.getElementById('devoteeWish').value.trim();
+            const lotusSelect = document.getElementById('lotusColor').value;
+            const lotusIcon = lotusSelect.split(' ')[0];
+
+            if (!name || !wish) return;
+
+            // Play sound
+            playBellSound();
+
+            // Show active altar flame area
+            document.getElementById('noFlameText').classList.add('hidden');
+            const activeArea = document.getElementById('activeFlameArea');
+            activeArea.classList.remove('hidden');
+            activeArea.classList.add('flex');
+
+            document.getElementById('blessingOutputName').innerText = "ສາທຸ! " + name;
+            document.getElementById('blessingOutputWish').innerText = '“' + wish + '”';
+            document.getElementById('offeredLotusIcon').innerText = lotusIcon;
+
+            // Save state
+            const currentList = getDevoteeList();
+            currentList.unshift({
+                name: name,
+                wish: wish,
+                lotus: lotusIcon,
+                time: "ເພິ່ງນີ້"
+            });
+            saveDevoteeList(currentList);
+            renderDevotees();
+
+            showToast("ທ່ານໄດ້ໄຕ້ທຽນ ແລະ ຖວາຍດອກບົວສຳເລັດແລ້ວ! ຂໍໃຫ້ສົມປະຖາໜາ", "ສາທຸ ສາທຸ", "fa-flame");
+
+            // Reset inputs
+            document.getElementById('devoteeName').value = '';
+            document.getElementById('devoteeWish').value = '';
+        }
+
+        function clearDevoteeList() {
+            localStorage.removeItem('xekaman_devotees');
+            renderDevotees();
+            showToast("ລຶບປະວັດການເຮັດບຸນແລ້ວ", "ແຈ້ງເຕືອນ", "fa-trash");
+        }
+
+        /* ===================================================
+           STREAMING_CHUNK:Adding Dhamma quote rotation and clipboard copy handlers...
+           =================================================== */
+       const QUOTES = [
+    { text: "ຄວາມເວັ້ນຈາກບາບທັງປວງ, ການຍັງກຸສົນໃຫ້ເຖິງພ້ອມ, ການເຮັດຈິດໃຈຂອງຕົນໃຫ້ຜ່ອງໃສ ນີ້ແມ່ນຄຳສອນຂອງພຣະພຸດທະເຈົ້າທັງຫຼາຍ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ການໃຫ້ທານ ຍ່ອມຊະນະການຕະຖີ່ ມີຄວາມເມດຕາ ຍ່ອມຊະນະຄວາມໂກດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຈິດໃຈທີ່ຝຶກອົບຮົມດີແລ້ວ ຍ່ອມນຳຄວາມສຸກມາໃຫ້.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມບໍ່ປະໝາດ ເປັນໜທາງແຫ່ງຄວາມບໍ່ຕາຍ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຕົນເປັນທີ່ເພິ່ງຂອງຕົນ ຄົນອື່ນໃຜເລີຍຈະເປັນທີ່ເພິ່ງໄດ້.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ເຮັດດີໄດ້ດີ ເຮັດຊົ່ວໄດ້ຊົ່ວ ກົດແຫ່ງກຳຍ່ອມໃຫ້ຜົນສະເໝີ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ຄວາມອົດທົນ ເປັນຕົບະຢ່າງຍິ່ງ.", source: "- ໂອວາດປາຕິໂມກ -" },
+    { text: "ຜູ້ມີສະຕິ ຍ່ອມມີຄວາມສຸກໃນທຸກສະຖານທີ່.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ເມດຕາທຳ ຄ້ຳຈູນໂລກ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ການຊະນະຕົນເອງ ດີກວ່າຊະນະສົງຄາມພັນຄັ້ງ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ຄວາມສຸກຍ່ອມເກີດຈາກຄວາມສະຫົບແຫ່ງຈິດໃຈ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ອະດີດຜ່ານໄປແລ້ວ ອນາຄົດຍັງບໍ່ເຖິງ ຈົ່ງຢູ່ກັບປັດຈຸບັນຢ່າງມີສະຕິ.", source: "- ຄຳສອນເຕືອນໃຈ -" },
+    { text: "ໂກດເຂົາ ເໝືອນຈຸດໄຟເຜົາຕົນເອງ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການສ້າງບຸນກຸສົນ ເປັນອະຣິຍະຊັບຕິດຕົວໄປທຸກຊາດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ປັນຍາຍ່ອມເກີດຈາກການພິຈາລະນາ ແລະ ການຝຶກຝົນ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມກະຕັນຍູ ຮູ້ຄຸນຄົນ ເປັນເຄື່ອງໝາຍຂອງຄົນດີ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ຢ່າເບິ່ງນຳຄວາມຊົ່ວຂອງຄົນອື່ນ ຈົ່ງກວດສອບຄວາມຊົ່ວຂອງຕົນເອງ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ສີລ ຍ່ອມນຳຄວາມສຸກ ແລະ ຄວາມສະຫົບມາໃຫ້ຜູ້ປະຕິບັດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມບໍ່ມີໂຣກ ເປັນລາບອັນປະເສີດ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ຄວາມບໍລິສຸດ ແລະ ຄວາມເສົ້າໝອງ ເປັນຂອງສະເພາະຕົນ ໃຜເຮັດໃຫ້ໃຜບໍລິສຸດບໍ່ໄດ້.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຜູ້ໃຫ້ຍ່ອມເປັນທີ່ຮັກຂອງຄົນທັງຫຼາຍ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມສັນໂດດ ເປັນຊັບຢ່າງຍິ່ງ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມຄຸ້ນເຄີຍ ເປັນຍາດຢ່າງຍິ່ງ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ນິບພານ ເປັນສຸກຢ່າງຍິ່ງ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ການບໍ່ເຮັດບາບທັງປວງ ນຳມາເຊິ່ງຄວາມສະຫົບສຸກ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຜູ້ມີຄວາມເພຍຽນ ຍ່ອມລ່ວງພົ້ນຄວາມທຸກໄດ້.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ວາຈາທີ່ໄພລោះ ແລະ ເປັນຈິງ ຍ່ອມມີຄ່າກວ່າຄຳເວົ້າພັນຄຳທີ່ໄຮ້ສາລະ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ການຄົບຄົນດີ ຍ່ອມນຳພາໄປສູ່ຄວາມຈະເລີນ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການບໍ່ຄົບຄົນພານ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການບູຊາຜູ້ທີ່ຄວນບູຊາ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການລ້ຽງດູພໍ່ແມ່ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການປະຕິບັດທຳ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຈິດໃຈທີ່ຜ່ອງໃສ ຍ່ອມນຳໄປສູ່ສຸຄະຕິ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມໂກດ ຍ່ອມທຳລາຍມິດພາບ ແລະ ຄວາມສະຫົບ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມໂລບ ຍ່ອມນຳມາເຊິ່ງຄວາມທຸກບໍ່ມີທີ່ສິ້ນສຸດ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມຫຼົງ ຍ່ອມເຮັດໃຫ້ຄົນເຮົາມືດບອດຈາກຄວາມຈິງ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ສະຕິ ຍ່ອມປ້ອງກັນຈິດໃຈບໍ່ໃຫ້ຕົກໄປໃນທາງທີ່ຜິດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ສີລ 5 ເປັນເກາະປ້ອງກັນຊີວິດໃຫ້ມີຄວາມສະຫົບສຸກ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ການເວັ້ນຈາກການຂ້າສັດ ຍ່ອມນຳມາເຊິ່ງຄວາມມີອາຍຸຢືນ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ການເວັ້ນຈາກການລັກຊັບ ຍ່ອມນຳມາເຊິ່ງຄວາມປອດໄພໃນຊັບສິນ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ການເວັ້ນຈາກການປະເວນີຜິດ ຍ່ອມນຳມາເຊິ່ງຄວາມສຸກໃນຄອບຄົວ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ການເວັ້ນຈາກການເວົ້າຂີ້ຕເລື່ອນ ຍ່ອມນຳມາເຊິ່ງຄວາມນັບຖືຈາກຄົນອື່ນ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ການເວັ້ນຈາກການດື່ມສຸລາ ຍ່ອມນຳມາເຊິ່ງສະຕິປັນຍາທີ່ແຈ່ມໃສ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ຄວາມດີທີ່ເຮັດໄວ້ ຍ່ອມບໍ່ສູນຫາຍໄປໃສ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ເວລາບໍ່ເຄີຍຄອຍໃຜ ຈົ່ງຟ້າວສ້າງຄວາມດີໃນມື້ນີ້.", source: "- ຄຳສອນເຕືອນໃຈ -" },
+    { text: "ຄວາມຕາຍເປັນຂອງແນ່ນອນ ແຕ່ເວລາຕາຍບໍ່ມີໃຜຮູ້.", source: "- ພິຈາລະນາມໍຣະນະສະຕິ -" },
+    { text: "ທຸກສິ່ງທຸກຢ່າງເກີດຂຶ້ນ ຕັ້ງຢູ່ ແລະ ດັບໄປເປັນທຳມະດາ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ສັງຂານທັງຫຼາຍບໍ່ທ່ຽງ ຈົ່ງພິຈາລະນາດ້ວຍຄວາມບໍ່ປະໝາດ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ການອະໄພ ໃຫ້ຄວາມສະຫົບແກ່ຈິດໃຈຂອງຜູ້ໃຫ້.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ລົມຫາຍໃຈເຂົ້າອອກ ເປັນຂອງຂວັນອັນປະເສີດຂອງຊີວິດ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ຈົ່ງເປັນຜູ້ຟັງที่ดี ຫຼາຍກວ່າເປັນຜູ້ເວົ້າທີ່ໄຮ້ສາລະ.", source: "- ຄຳສອນເຕືອນໃຈ -" },
+    { text: "ຄວາມອ່ອນນ້ອມຖ່ອມຕົນ ຍ່ອມນຳມາເຊິ່ງຄວາມເມດຕາຈາກຜູ້ໃຫຍ່.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມຊື່ສັດ ສຸຈະລິດ ເປັນຮາກຖານຂອງຊີວິດທີ່ດີງາມ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມຂະຫຍັນປະຢັດ ເປັນຄຸນນະທຳນຳໄປສູ່ຄວາມຮັ່ງມີ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການຮູ້ຈັກພໍ ຍ່ອມເຮັດໃຫ້ຊີວິດมีความສຸກຕາມອັດຕະພາບ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມອິດສາ ຍ່ອມທຳລາຍຄວາມສຸກຂອງຕົນເອງ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມຮັກທີ່ແທ້ຈິງ ຄືຄວາມປາດຖະໜາໃຫ້ผู້ອື່ນมีความສຸກ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມກະລຸນາ ຄືຄວາມປາດຖະໜາໃຫ້ผู້ອື່ນພົ້ນຈາກຄວາມທຸກ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ມຸທິຕາ ຄືຄວາມຍິນດີເມື່ອผู້ອື່ນໄດ້ດີ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ອຸເປກຂາ ຄືຄວາມວາງເສີຍດ້ວຍປັນຍາ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ການທຳບຸນ ບໍ່ແມ່ນພຽງແຕ່ການໃຫ້ທານ ແຕ່ລວມເຖິງການรักษาສີລ ແລະ ພາວະນາ.", source: "- ຄຳສອນພຣະທຳ -" },
+    { text: "ການທຳສະມາທິ ຍ່ອມເຮັດໃຫ້ຈິດໃຈມີພະລັງ ແລະ ສະຫົບຕັ້ງມັ້ນ.", source: "- ຂໍ້ຄິດປະຕິບັດ -" },
+    { text: "ປັນຍາ ຄືແສງສະຫວ່າງສ່ອງທາງໃນຄວາມມືດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມພະຍາຍາມຢູ່ທີ່ໃດ ຄວາມສຳເລັດຢູ່ທີ່ນັ້ນ.", source: "- ສຸພາສິດເຕືອນໃຈ -" },
+    { text: "ອຸປະສັກ ເປັນບົດຮຽນສຳຄັນໃນການຝຶກຝົນຕົນເອງ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການຍອມຮັບຄວາມຈິງ ເປັນບາດກ້າວທຳອິດຂອງຄວາມສະຫົບ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຢ່າເອົາຄວາມສຸກຂອງຕົນເອງ ໄປຜູກໄວ້ກັບປາກຂອງຄົນອື່ນ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄຳນິນທາ ເໝືອນລົມພັດມາແລ້ວກໍ່ພັດໄປ ຢ່າເກັບມາເກັບໄວ້ໃນໃຈ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມດີທີ່ເຮັດໃນມຸມມືດ ຍ່ອມສົ່ງຜົນໃຫ້ສະຫວ່າງໃນທີ່ແຈ້ງ.", source: "- ຄຳສອນເຕືອນໃຈ -" },
+    { text: "ການຟັງທຳຕາມກາລະ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການສົນທະນາທຳຕາມກາລະ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຄວາມເຄົາລົບ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຄວາມຖ່ອມຕົນ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຄວາມອົດທົນ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຄວາມເປັນຜູ້ວ່າງ່າຍ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການເຫັນສະມະນະ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ການເຮັດຈິດໃຈບໍ່ໃຫ້ຫ່ວັນໄຫວໃນໂລກກະທຳ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຈິດໃຈທີ່ໄຮ້ໂສກ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຈິດໃຈທີ່ປາດສະຈາກມົນທິນ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຈິດໃຈທີ່ເກັມເກษມ ເປັນມົງຄົນອັນປະເສີດ.", source: "- ມັງຄະລາສູດ -" },
+    { text: "ຄວາມກະຕັນຍູຕໍ່ຜູ້ມີພຣະຄຸນ ຍ່ອມນຳມາເຊິ່ງຄວາມຈະເລີນຮຸ່ງເຮືອງ.", source: "- ຄຳສອນເຕືອນໃຈ -" },
+    { text: "ເມື່ອມີຄວາມທຸກ ຈົ່ງໃຊ້ສະຕິ ແລະ ປັນຍາໃນການແກ້ໄຂ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຢ່າປ່ອຍໃຫ້ຄວາມໂກດ ເປັນຜູ້ຄວບຄຸມການກະທຳຂອງຕົນ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການໃຫ້ອະໄພ ຄືການປົດປ່ອຍຕົນເອງຈາກຄວາມທຸກ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຄວາມສຸກທີ່ແທ້ຈິງ ບໍ່ໄດ້ຢູ່ທີ່ວັດຖຸ ແຕ່ຢູ່ທີ່ຈິດໃຈ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຈົ່ງເປັນຜູ້ສ້າງຄວາມສຸກ ໃຫ້ແກ່ຄົນຮອບข้าง.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການມີມິດດີ ຍ່ອມພາໄປສູ່ທາງທີ່ດີ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ການຄຸ້ມຄອງທວານໃນອິນຊີ ເປັນທາງນຳໄປສູ່ຄວາມສະຫົບ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມປະໝາດ ເປັນເຄືອດທາງແຫ່ງຄວາມເສື່ອມ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຈົ່ງພິຈາລະນາຄວາມແກ່ ຄວາມເຈັບ ແລະ ຄວາມຕາຍ ເພື່ອບໍ່ໃຫ້ປະໝາດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມຮັກໃຜ່ໃນທຳ ຍ່ອມນຳມາເຊິ່ງຄວາມສຸກ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຜູ້ປະຕິບັດທຳ ຍ່ອມມີທຳມະຄຸ້ມຄອງ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມສະຫົບແຫ່ງຈິດ ຍ່ອມເກີດຈາກການລະຄວາມຢາກ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ການຝຶກຕົນເອງ ເປັນສິ່ງທີ່ປະເສີດທີ່ສຸດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມບໍ່ມີອະຄະຕິ ຍ່ອມນຳມາເຊິ່ງຄວາມຍຸຕິທຳ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ຈົ່ງໃຊ້ຊີວິດດ້ວຍຄວາມເມດຕາ ແລະ ປັນຍາໃນທຸກໆ ວັນ.", source: "- ຂໍ້ຄິດເຕືອນໃຈ -" },
+    { text: "ການໃຫ້ຄວາມຮູ້ ເປັນການໃຫ້ທານອັນປະເສີດ.", source: "- ພຣະທຳມະຄຳສອນ -" },
+    { text: "ຄວາມສຸກຍ່ອມຕາມຜູ້ມີຈິດໃຈດີ ເໝືອນເງົາຕາມໂຕ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ຄວາມທຸກຍ່ອມຕາມຜູ້ມີຈິດໃຈຊົ່ວ ເໝືອນລໍ້ລົດຕາມຮອບຕີນງົວ.", source: "- ພຣະພຸດທະໂອວາດ -" },
+    { text: "ຄວາມບໍ່ມີໂຣກທາງໃຈ ຄືຄວາມປາດສະຈາກກິເລດ.", source: "- ພຣະທຳມະຄຳສອນ -" }
+];
+        function getRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * QUOTES.length);
+            document.getElementById('dhammaText').innerText = QUOTES[randomIndex].text;
+            document.getElementById('dhammaSource').innerText = QUOTES[randomIndex].source;
+            showToast("ສຸ່ມທຳມະຄຳສອນໃໝ່ແລ້ວ", "ທຳມະທານ", "fa-quote-left");
+        }
+
+        function copyDhammaQuote() {
+            const text = document.getElementById('dhammaText').innerText + " " + document.getElementById('dhammaSource').innerText;
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            showToast("ຄັດລອກຂໍ້ຄວາມທຳມະຄຳສອນສຳເລັດແລ້ວ!", "ຄັດລອກແລ້ວ", "fa-copy");
+        }
+
+        function copyAccountNo() {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = "160-12-00-00123456-001";
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            showToast("ຄັດລອກເລກບັນຊີ BCEL 160-12-00-00123456-001 ສຳເລັດແລ້ວ!", "ຄັດລອກແລ້ວ", "fa-copy");
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            showToast("ຂອບໃຈສຳລັບການຕິດຕໍ່! ຂ້າພະເຈົ້າຈະຕອບກັບຂໍ້ຄວາມຂອງທ່ານໂດຍໄວ.", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
+            e.target.reset();
+        }
+
     function openMonkImage() {
         var profileImg = document.getElementById('monkProfileImg');
         var modal = document.getElementById('monkImageModal');
@@ -888,7 +1318,6 @@
             modal.style.display = 'none';
         }
     }
-</script>
     <!-- ກັອບປີ້ໂຄດລຸ່ມນີ້ ໄປວາງໄວ້ໃນໄຟລ໌ໜ້າທຳອິດ (ເຊັ່ນ index.html) ບ່ອນທີ່ທ່ານຕ້ອງການໃຫ້ສະແດງປຸ່ມ -->
 
 <style>
