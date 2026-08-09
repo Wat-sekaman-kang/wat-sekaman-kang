@@ -534,7 +534,8 @@
         <div class="bg-gradient-to-br from-amber-100 via-amber-50 to-orange-100 border-2 border-laoGold/40 rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden text-center">
             <i class="fa-solid fa-quote-left text-6xl text-laoGold/20 absolute top-4 left-6"></i>
             <i class="fa-solid fa-quote-right text-6xl text-laoGold/20 absolute bottom-4 right-6"></i>
-        <div class="relative z-10 max-w-3xl mx-auto">
+
+           <div class="relative z-10 max-w-3xl mx-auto">
     <p class="text-xl sm:text-3xl font-lao-serif font-bold text-laoMaroon leading-relaxed mb-6">
         <span id="dhammaText">"ຄວາມເວັ້ນຈາກບາບທັງປວງ, ການຍັງກຸສົນໃຫ້ເຖິງພ້ອມ, ການເຮັດຈິດໃຈຂອງຕົນໃຫ້ຜ່ອງໃສ ນີ້ແມ່ນຄຳສອນຂອງພຣະພຸດທະເຈົ້າທັງຫຼາຍ."</span>
     </p>
@@ -542,8 +543,16 @@
         <span id="dhammaSource">- ພຣະພຸດທະໂອວາດ -</span>
     </p>
 
-    <div class="flex flex-wrap justify-center gap-3">
-        <!-- ปุ่มแชร์ Facebook -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="getRandomQuote()" class="bg-laoMaroon text-laoGold font-semibold px-6 py-3 rounded-full shadow-md hover:bg-laoMaroonDark transition-all active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>ສຸ່ມຄຳສອນໃໝ່</span>
+                    </button>
+                    <button onclick="copyDhammaQuote()" class="bg-white text-laoMaroon border border-laoGold/50 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-amber-50 transition-all active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>ຄັດລອກຂໍ້ຄວາມ</span>
+                    </button>
+                   <!-- ปุ่มแชร์ Facebook -->
         <button type="button" onclick="shareToFacebook()" style="background-color: #1877f2;" class="text-white font-semibold px-5 py-3 rounded-full shadow-md hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
             <i class="fab fa-facebook"></i>
             <span>ແບ່ງປັນ Facebook</span>
@@ -554,10 +563,9 @@
             <i class="fab fa-whatsapp"></i>
             <span>ສົ່ງທາງ WhatsApp</span>
         </button>
-    </div>
-</div>
-</div>
-</section>
+            </div>
+        </div>
+    </section>
 
     <!-- Events & Calendar Section -->
     <section id="events" class="py-20 bg-amber-50 border-t border-laoGold/20 px-4">
