@@ -1403,17 +1403,21 @@
             showToast("ຄັດລອກເລກບັນຊີ BCEL 160-12-00-00123456-001 ສຳເລັດແລ້ວ!", "ຄັດລອກແລ້ວ", "fa-copy");
         }
 
-       function handleContactSubmit(e) {
+function handleContactSubmit(e) {
     e.preventDefault();
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwms4CAj46BajSmqXU6OcAkxyP31DsxWmhUtSUXbqJ2/dev';
+    // ວາງ URL ໃໝ່ໃສ່ບ່ອນນີ້
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyRNp_doGL4rXXaGYJWxE8KgLB_DJiJ5cx-EMn6qxmcSJdLcPdqP4AdFudpmV406Rxo5A/exec';
 
-    const inputs = e.target.querySelectorAll('input[type="text"]');
+    const form = e.target;
+    const inputs = form.querySelectorAll('input');
+    const textarea = form.querySelector('textarea');
+
     const formData = {
         name: inputs[0] ? inputs[0].value : '',
-        phone: e.target.querySelector('input[type="tel"]') ? e.target.querySelector('input[type="tel"]').value : '',
-        subject: inputs[1] ? inputs[1].value : '',
-        message: e.target.querySelector('textarea') ? e.target.querySelector('textarea').value : ''
+        phone: inputs[1] ? inputs[1].value : '',
+        subject: inputs[2] ? inputs[2].value : '',
+        message: textarea ? textarea.value : ''
     };
 
     fetch(scriptURL, {
@@ -1426,13 +1430,13 @@
     })
     .then(() => {
         showToast("ສົ່ງຂໍ້ຄວາມສຳເລັດແລ້ວ!", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
-        e.target.reset();
+        form.reset();
     })
     .catch(error => {
         showToast("ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່", "ສົ່ງບໍ່ສຳເລັດ", "fa-exclamation-triangle");
         console.error('Error!', error.message);
     });
-    }
+}
         // 1. ฟังก์ชันแชร์ลง Facebook
 function shareToFacebook() {
     try {
