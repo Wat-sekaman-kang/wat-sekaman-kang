@@ -1070,8 +1070,8 @@
                     <i class="fa-solid ${icon}"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-lao-serif font-bold text-laoGold text-sm">${title}</h5>
-                    <p class="text-xs text-amber-100 font-sans truncate">${message}</p>
+                    <h5 class="font-lao-serif font-bold text-laoGold text-sm">${translateText(title)}</h5>
+                    <p class="text-xs text-amber-100 font-sans truncate">${translateText(message)}</p>
                 </div>
             `;
 
@@ -1090,8 +1090,8 @@
         }
 
         function openModal(title, contentHtml) {
-            document.getElementById('modalTitle').querySelector('span').innerText = title;
-            document.getElementById('modalBody').innerHTML = contentHtml;
+            document.getElementById('modalTitle').querySelector('span').innerText = translateText(title);
+            document.getElementById('modalBody').innerHTML = translateHtml(contentHtml);
             const modal = document.getElementById('appModal');
             modal.classList.remove('hidden');
             setTimeout(() => {
@@ -1225,9 +1225,9 @@
                 <div class="bg-laoMaroon/70 p-3 rounded-xl border border-laoGold/20 flex justify-between items-center gap-2">
                     <div class="min-w-0">
                         <span class="font-bold text-laoGold block text-xs sm:text-sm font-lao-serif truncate">${d.lotus || '🪷'} ${d.name}</span>
-                        <p class="text-amber-100/80 text-xs font-light truncate">${d.wish}</p>
+                        <p class="text-amber-100/80 text-xs font-light truncate">${translateText(d.wish)}</p>
                     </div>
-                    <span class="text-[10px] text-amber-200/60 shrink-0 bg-laoMaroonDark/60 px-2 py-1 rounded-md border border-laoGold/10">${d.time}</span>
+                    <span class="text-[10px] text-amber-200/60 shrink-0 bg-laoMaroonDark/60 px-2 py-1 rounded-md border border-laoGold/10">${translateText(d.time)}</span>
                 </div>
             `).join('');
         }
@@ -1250,7 +1250,7 @@
             activeArea.classList.remove('hidden');
             activeArea.classList.add('flex');
 
-            document.getElementById('blessingOutputName').innerText = "ສາທຸ! " + name;
+            document.getElementById('blessingOutputName').innerText = translateText("ສາທຸ!") + " " + name;
             document.getElementById('blessingOutputWish').innerText = '“' + wish + '”';
             document.getElementById('offeredLotusIcon').innerText = lotusIcon;
 
@@ -1385,8 +1385,10 @@
 ];
         function getRandomQuote() {
             const randomIndex = Math.floor(Math.random() * QUOTES.length);
-            document.getElementById('dhammaText').innerText = QUOTES[randomIndex].text;
-            document.getElementById('dhammaSource').innerText = QUOTES[randomIndex].source;
+            const quote = QUOTES[randomIndex];
+            const englishQuote = autoTranslations.en.quotes[randomIndex];
+            document.getElementById('dhammaText').innerText = getPreferredLanguage() === 'en' ? englishQuote : quote.text;
+            document.getElementById('dhammaSource').innerText = translateText(quote.source);
             showToast("ສຸ່ມທຳມະຄຳສອນໃໝ່ແລ້ວ", "ທຳມະທານ", "fa-quote-left");
         }
 
@@ -1486,7 +1488,7 @@ function shareToWhatsApp() {
         var pageUrl = window.location.href;
 
         // จัดรูปแบบข้อความ WhatsApp (มีตัวหนาและลิงก์อ่านเพิ่มเติม)
-        var message = "*" + text + "*\n" + (source ? source + "\n" : "") + "\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມ: " + pageUrl;
+        var message = "*" + text + "*\n" + (source ? source + "\n" : "") + "\n" + translateText("📖 ອ່ານຄຳສອນເພີ່ມເຕີມ:") + " " + pageUrl;
 
         // สร้าง Link สำหรับส่ง WhatsApp
         var whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
@@ -1578,6 +1580,351 @@ const autoTranslations = {
     }
 };
 
+// Complete English translation set for every built-in interface string.
+// User-entered names and wishes are intentionally kept as entered.
+Object.assign(autoTranslations.en, {
+    "ວັດເຊກະໝານກາງ - Wat Xekaman Kang": "Wat Xekaman Kang",
+    "ແຈ້ງເຕືອນ": "Notification",
+    "ຕົກລົງ / ປິດ": "OK / Close",
+    "ວັດເຊກະໝານກາງ": "Wat Xekaman Kang",
+    "ວັດເຊກະພານກາງ": "Wat Xekaman Kang",
+    "ປະວັດຄວາມເປັນມາ": "History",
+    "ສິ່ງສັກສິດ": "Sacred Sites",
+    "ໄຕ້ທຽນອອນໄລນ໌": "Online Candle Offering",
+    "ທຳມະຄຳສອນ": "Dhamma Teachings",
+    "ກິດຈະກຳ-ງານບຸນ": "Activities & Festivals",
+    "ຕິດຕໍ່-ແຜນທີ່": "Contact & Map",
+    "ຮ່ວມເຮັດບຸນ": "Make Merit",
+    "ຮ່ວມເຮັດບຸນບໍລິຈາກ": "Make Merit & Donate",
+    "ສາທຸ ສາທຸ ສາທຸ - ຍິນດີຕ້ອນຮັບສູ່ດິນແດນແຫ່ງທຳ": "Sadhu, Sadhu, Sadhu — welcome to the land of Dhamma",
+    "ສູນລວມຈິດໃຈ, ທຳມະທານ, ມໍລະດົກທາງສະຖາປັດຕະຍະກຳ ແລະ ຄວາມສະຫງົບສຸກແຫ່ງລຸ່ມນ້ຳເຊກະໝານ": "A center of faith, Dhamma, architectural heritage, and peace along the Sekaman River",
+    "ໄຕ້ທຽນ & ຖວາຍດອກບົວ": "Light a Candle & Offer a Lotus",
+    "ອ່ານປະວັດຄວາມເປັນມາ": "Read Our History",
+    "ຕັກບາດເຊົ້າ": "Morning Alms Offering",
+    "ທຸກໆເຊົ້າ ເວລາ 06:00 ໂມງ": "Every morning at 6:00 AM",
+    "ທຳວັດສູດມົນ": "Morning and Evening Chanting",
+    "ເຊົ້າ 07:00 | ແລງ 18:00": "Morning 7:00 AM | Evening 6:00 PM",
+    "ປະຕິບັດທຳ & ສະມາທິ": "Dhamma Practice & Meditation",
+    "ທຸກໆວັນສີນ ແລະ ວັນອາທິດ": "Every observance day and Sunday",
+    "ປະວັດຄວາມເປັນມາ ວັດເຊກະໝານກາງ": "History of Wat Xekaman Kang",
+    "ປີ ແຫ່ງຄວາມສັດທາ": "Years of Faith",
+    "ຕັ້ງຢູ່ແຄມນ້ຳເຊກະໝານ ດິນແດນອຸດົມສົມບູນດ້ວຍທຳມະຊາດ ແລະ ວັດທະນະທຳອັນງົດງາມ. ເປັນວັດເກົ່າແກ່ທີ່ສ້າງຂຶ້ນໂດຍຄວາມສັດທາຮ່ວມກັນຂອງພຸດທະສາສະນິກະຊົນ ເພື່ອເປັນສູນລວມຈິດໃຈ, ບ່ອນອົບຮົມສີລະທຳ ແລະ ບ່ອນສຶກສາພຣະທຳຄຳສອນຂອງອົງພຣະສຳມາສຳພຸດທະເຈົ້າ.": "Situated beside the Sekaman River in a land rich in nature and culture, this historic temple was built through the shared faith of Buddhists as a spiritual center, a place for moral training, and a place to study the Buddha's teachings.",
+    "ຊື່ຂອງວັດ \"ເຊກະໝານກາງ\" ມີທີ່ມາຈາກທີ່ຕັ້ງທີ່ຢູ່ເຄິ່ງກາງຂອງລຸ່ມນ້ຳເຊກະໝານ ເຊິ່ງເປັນສາຍນ້ຳຫຼັກທີ່ລ້ຽງຊີວິດປະຊາຊົນ. ພຣະອຸໂບສົດ ແລະ ສິ່ງກໍ່ສ້າງພາຍໃນວັດໄດ້ຮັບການອອກແບບຕາມສະຖາປັດຕະຍະກຳລາວອັນເປັນເອກະລັກ ມີຊໍ່ຟ້າ, ໃບລະກາ, ແລະ ລວດລາຍກົບກຽວຢ່າງອ່ອນຊ້ອຍ.": "The name ‘Xekaman Kang’ comes from the temple's location in the middle of the Sekaman River basin, a vital waterway for the community. Its ordination hall and buildings feature distinctive Lao architecture, with elegant roof finials, decorative gables, and intricate carved motifs.",
+    "ປັດຈຸບັນ, ວັດເຊກະໝານກາງ ບໍ່ພຽງແຕ່ເປັນສະຖານທີ່ປະກອບພິທີທາງສາສະໜາເທົ່ານັ້ນ, ແຕ່ຍັງເປັນສູນອະນຸລັກສິລະປະວັດທະນະທຳລາວ, ສະຖານທີ່ປະຕິບັດທຳຂອງປະຊາຊົນ ແລະ ຕ້ອນຮັບແຂກບ້ານແຂກເມືອງທີ່ມາຢ້ຽມຢາມດ້ວຍຄວາມອົບອຸ່ນ.": "Today, Wat Xekaman Kang is not only a place for religious ceremonies; it also preserves Lao arts and culture, supports Dhamma practice, and warmly welcomes visitors.",
+    "ທຳມະຊາດຮົມເຢັນ": "Peaceful Nature",
+    "ຕັ້ງຢູ່ຕິດແຄມນ້ຳ": "Located by the riverside",
+    "ສູນຮວມສັດທາ": "Center of Faith",
+    "ຮັກສາປະເພນີອັນດີງາມ": "Preserving fine traditions",
+    "ສິ່ງສັກສິດ ແລະ ສາສະນະສະຖານ": "Sacred Sites and Religious Buildings",
+    "ຊົມຄວາມງາມຂອງສະຖາປັດຕະຍະກຳ ແລະ ສິ່ງສັກສິດຄູ່ບ້ານຄູ່ເມືອງພາຍໃນວັດເຊກະໝານກາງ": "Discover the beauty of the temple's architecture and its community's sacred treasures",
+    "ສາສະນະສະຖານຫຼັກ": "Main Religious Building",
+    "ພາບຖ່າຍມຸມກວ້າງຂອງວັດເຊກະໝານກາງ ສູນລວມສັດທາແຄມນ້ຳເຊກະໝານ": "A panoramic view of Wat Xekaman Kang, a center of faith by the Sekaman River",
+    "ພຣະອຸໂບສົດ": "Ordination Hall",
+    "ພຣະອຸໂບສົດ (ສິມ)": "Ordination Hall (Sim)",
+    "ພຣະອຸໂບສົດສຸວັນນະພູມ ອອກແບບດ້ວຍຊ່າງຝີມືລາວ, ມີຫຼັງຄາຊ້ອນຊັ້ນອັນສົມສ່ວນ ພ້ອມລວດລາຍແກະສະຫຼັກຄຳ": "The Suwannaphum Ordination Hall was designed by Lao artisans, with harmonious tiered roofs and golden carved motifs.",
+    "ພຣະອຸໂບສົດສຸວັນນະພູມ ອອກແບບດ້ວຍຊ່າງຝີມືລາວ, ມີຫຼັງຄາຊ້ອນຊັ້ນອັນສົມສ່ວນ ພ້ອມລວດລາຍແກະສະຫຼັກຄຳທີ່ສະທ້ອນຄວາມຮຸ່ງເຮືອງທາງພຸດທະສາສະໜາ.": "The Suwannaphum Ordination Hall was crafted by Lao artisans, with harmonious tiered roofs and golden carvings that reflect the splendor of Buddhism.",
+    "ຕັ້ງຢູ່ໃຈກາງຂອງວັດ": "Located at the heart of the temple",
+    "ພຣະປະທານ": "Principal Buddha Image",
+    "ພຣະພຸດທະເຊກະໝານ": "Xekaman Buddha Image",
+    "ພຣະພຸດທະຮູບປະທານອົງໃຫຍ່ ຫຼໍ່ດ້ວຍທອງສຳລິດ ປາງມາຣະວິໄຊ ມີພຣະພັກອັນສະຫງົບເຢັນ ເປັນທີ່ເຄົາລົບສັກກະຣະບູຊາ": "A large bronze Buddha image in the Mara-vijaya posture, with a serene expression, revered by worshippers.",
+    "ພຣະພຸດທະຮູບປະທານອົງໃຫຍ່ ຫຼໍ່ດ້ວຍທອງສຳລິດ ປາງມາຣະວິໄຊ ມີພຣະພັກອັນສະຫງົບເຢັນ ເປັນທີ່ເຄົາລົບສັກກະຣະບູຊາຂອງຊາວບ້ານ ແລະ ອາຄັນຕຸກະ.": "A large bronze principal Buddha image in the Mara-vijaya posture, with a serene expression, revered by local people and visitors.",
+    "ປະທັບໃນພຣະອຸໂບສົດ": "Enshrined in the Ordination Hall",
+    "ຫໍພຣະໄຕປິດົກ": "Tripitaka Library",
+    "ຫໍໄຕກາງນ້ຳ": "Waterside Scripture Library",
+    "ຫໍເກບໄພລານ ແລະ ຄຳພີພຣະໄຕປິດົກໂບຮານ ຕັ້ງຢູ່ແຄມນ້ຳເຊກະໝານ ເພື່ອປ້ອງກັນປວກ ແລະ ແມງໄມ້": "A riverside repository for palm-leaf manuscripts and ancient Tripitaka scriptures, built to protect them from termites and insects.",
+    "ຫໍເກບໄພລານ ແລະ ຄຳພີພຣະໄຕປິດົກໂບຮານ ຕັ້ງຢູ່ແຄມນ້ຳເຊກະໝານ ເພື່ອປ້ອງກັນປວກ ແລະ ແມງໄມ້, ອຸດົມດ້ວຍຄຳສອນອັນລຳ້ຄ່າ.": "A riverside repository for palm-leaf manuscripts and ancient Tripitaka scriptures, designed to protect them from termites and insects and preserve their invaluable teachings.",
+    "ບ່ອນເກັບຮັກສາຄຳພີໂບຮານ": "Repository of ancient scriptures",
+    "ໄຕ້ທຽນ & ຖວາຍດອກບົວອອນໄລນ໌": "Light a Candle & Offer a Lotus Online",
+    "ສົ່ງຜົນບຸນ ແລະ ຄຳອະທິຖານຂອງທ່ານ ເພື່ອຄວາມສົມຫວັງ, ຄວາມສະຫງົບສຸກ ແລະ ເປັນສິຣິມົງຄົນແກ່ຊີວິດ": "Offer your merit and prayer for fulfillment, peace, and blessings in life",
+    "ກະລຸນາປ້ອນຊື່ ແລະ ຄຳອະທິຖານ ຈາກນັ້ນກົດປຸ່ມ \"ໄຕ້ທຽນ & ຖວາຍດອກບົວ\"": "Enter your name and prayer, then select ‘Light a Candle & Offer a Lotus’.",
+    "ຊື່ ແລະ ນາມສະກຸນ ຜູ້ຮ່ວມເຮັດບຸນ": "Full Name of the Merit Maker",
+    "ຕົວຢ່າງ: ທ່ານ ທອງດີ + ຄອບຄົວ": "e.g. Mr. Thongdy + family",
+    "ເລືອກສີດອກບົວຖວາຍ": "Choose a Lotus Color",
+    "🌸 ດອກບົວສີຊົມພູ (ຄວາມເມດຕາ & ຄວາມຮັກ)": "🌸 Pink lotus (kindness & love)",
+    "🪷 ດອກບົວສີຂາວ (ຄວາມບໍລິສຸດ & ປັນຍາ)": "🪷 White lotus (purity & wisdom)",
+    "🌼 ດອກບົວສີເຫຼືອງ (ຄວາມຈະເລີນຮຸ່ງເຮືອງ)": "🌼 Yellow lotus (prosperity)",
+    "ຄຳອະທິຖານ / ຂໍພອນ": "Prayer / Blessing Request",
+    "ຂໍໃຫ້ຄອບຄົວມີຄວາມສຸກ, ສຸຂະພາບແຂງແຮງ, ປາສະຈາກໂຣກໄພໄຂ້ເຈັບ...": "May my family be happy, healthy, and free from illness...",
+    "ລາຍຊື່ຜູ້ໄຕ້ທຽນຖວາຍດອກບົວບໍ່ດົນມານີ້": "Recent Candle and Lotus Offerings",
+    "ລຶບປະວັດ": "Clear History",
+    "ທຳມະຄຳສອນປະຈຳວັນ": "Daily Dhamma Teaching",
+    "\"ຄວາມເວັ້ນຈາກບາບທັງປວງ, ການຍັງກຸສົນໃຫ້ເຖິງພ້ອມ, ການເຮັດຈິດໃຈຂອງຕົນໃຫ້ຜ່ອງໃສ ນີ້ແມ່ນຄຳສອນຂອງພຣະພຸດທະເຈົ້າທັງຫຼາຍ.\"": "‘Avoid all evil, cultivate good, and purify your mind — this is the teaching of all Buddhas.’",
+    "- ພຣະທຳມະຄຳສອນ ໂອວາດປາຕິໂມກ -": "— Ovada Patimokkha —",
+    "ສຸ່ມຄຳສອນໃໝ່": "New Random Teaching",
+    "ຄັດລອກຂໍ້ຄວາມ": "Copy Text",
+    "ແບ່ງປັນ Facebook": "Share on Facebook",
+    "ສົ່ງທາງ WhatsApp": "Send via WhatsApp",
+    "ງານບຸນປະເພນີ ແລະ ຕາຕະລາງກິດຈະກຳ": "Traditional Festivals & Activity Schedule",
+    "ຂໍເຊີນຊວນສັດທາສາທຸຊົນທັງຫຼາຍ ຮ່ວມງານບຸນປະເພນີປະຈຳປີ ແລະ ກິດຈະກຳທາງສາສະໜາ": "All devotees are invited to join our annual traditional festivals and religious activities.",
+    "ງານບຸນປະຈຳປີ": "Annual Festival",
+    "ເດືອນ 11 ລາວ": "11th Lao lunar month",
+    "ງານບຸນອອກພັນສາ & ລອຍກະໂທງ": "End of Buddhist Lent & Floating Lantern Festival",
+    "ພິທີຕັກບາດເທໂວ, ຟັງພຣະທຳເທດສະໜາ, ໄຕ້ປະທີບໂຄມໄຟ ແລະ ລອຍກະໂທງບູຊາສາຍນ້ຳເຊກະໝານ.": "Alms giving to monks, Dhamma sermons, lantern lighting, and floating offerings to honor the Sekaman River.",
+    "ຕະຫຼອດມື້": "All day",
+    "ແຄມນ້ຳເຊກະໝານ": "Sekaman Riverside",
+    "ບຸນມະຫາຊາດ": "Vessantara Festival",
+    "ເດືອນ 4 ລາວ": "4th Lao lunar month",
+    "ງານບຸນມະຫາຊາດ (ບຸນຜະເວດ)": "Vessantara Festival (Bun Phawet)",
+    "ພິທີແຫ່ຜ້າຜະເວດ, ຟັງເທດສະໜາມະຫາຊາດ 13 ກັນ 1000 ພຣະຄາຖາ ເພື່ອສີຣິມົງຄົນ.": "A procession of the Vessantara cloth and listening to all 13 chapters of the Great Birth Sermon for blessings.",
+    "3 ມື້ 3 ຄືນ": "3 days and 3 nights",
+    "ກິດຈະກຳປະຈຳອາທິດ": "Weekly Activity",
+    "ທຸກໆວັນອາທິດ": "Every Sunday",
+    "ອົບຮົມສະມາທິ & ສຶກສາທຳ": "Meditation Training & Dhamma Study",
+    "ຮຽນຮູ້ການເຈີນສະມາທິພາວະນາ, ຝຶກຈິດໃຈໃຫ້ສະຫງົບ ແລະ ແລກປ່ຽນຄຳສອນທຳມະ.": "Learn meditation, train the mind for calm, and share Dhamma teachings.",
+    "14:00 - 16:00 ໂມງ": "2:00 PM – 4:00 PM",
+    "ຫໍແຈກ (ສາລາການເປຣຽນ)": "Dhamma Hall (Study Pavilion)",
+    "ຮ່ວມເຮັດບຸນບໍລິຈາກ ບູລະນະວັດເຊກະໝານກາງ": "Make Merit and Donate for the Restoration of Wat Xekaman Kang",
+    "ຂໍເຊີນຊວນສາທຸຊົນຜູ້ມີຈິດສັດທາ ຮ່ວມບໍລິຈາກທຶນຮັກສາສ້ອມແປງພຣະອຸໂບສົດ, ຄ່ານ້ຳ-ຄ່າໄຟ, ທຶນການສຶກສາພຣະພິກຂຸ-ສາມະເນນ ແລະ ສ້າງສາທາລະນະປະໂຫຍດໃນຊຸມຊົນ.": "Devotees are invited to contribute to repairs of the ordination hall, utility costs, education for monks and novices, and community benefit projects.",
+    "ຮ່ວມສ້າງ ແລະ ບູລະນະສິມ/ພຣະອຸໂບສົດ": "Help Build and Restore the Ordination Hall",
+    "ອຸປະຖຳການສຶກສາພຣະທຳມະວິນັຍ": "Support Dhamma and Monastic Education",
+    "ກອງທຶນສາທາລະນະສຸກ ແລະ ບຸນປະເພນີ": "Public Welfare and Traditional Festival Fund",
+    "ອອກໃບອະນຸໂມທະນາບຸນ (Digital Receipt)": "Create a Merit Certificate (Digital Receipt)",
+    "ສະແກນ QR Code ເພື່ອຮ່ວມບໍລິຈາກ (BCEL One)": "Scan the QR Code to Donate (BCEL One)",
+    "ຊື່ບັນຊີ: Khamsavanh LEUAMTHININ Monk)": "Account Name: Khamsavanh LEUAMTHININ (Monk)",
+    "ທະນາຄານ:": "Bank:",
+    "ທະນາຄານການຄ້າຕ່າງປະເທດລາວ (BCEL)": "Banque Pour Le Commerce Exterieur Lao (BCEL)",
+    "ເລກບັນຊີ (LAK):": "Account Number (LAK):",
+    "ເລກບັນຊີ (THB):": "Account Number (THB):",
+    "ຄັດລອກເລກບັນຊີ": "Copy Account Number",
+    "ເຂົ້າເບິ່ງທຳນຽບສະມາຊິກພາຍໃນວັດ": "View the Temple Member Directory",
+    "ບ້ານເຊກະໝານກາງ, ເມືອງ ສາມັກຄີໄຊ ແລະ ແຂວງ ອັດຕະປື, ສປປລາວ": "Xekaman Kang Village, Samakkixay District, Attapeu Province, Laos",
+    "ຫົວຂໍ້": "Subject",
+    "ຂໍ້ຄວາມ": "Message",
+    "ລິ້ງຄ໌ດ່ວນ": "Quick Links",
+    "ຄຳອຸທິດສ່ວນບຸນ": "Dedication of Merit",
+    "\"ອິດທັງ ເມ ຍາຕີນັງ ໂຫຕຸ ສຸຂິຕາ ໂຫນຕຸ ຍາຕະໂຍ\"": "‘May this merit reach all my relatives; may they be happy.’",
+    "ຂໍສ່ວນບຸນນີ້ຈົ່ງສຳເລັດແກ່ຍາດຕິພີ່ນ້ອງທັງຫຼາຍຂອງຂ້າພະເຈົ້າ ຂໍໃຫ້ຍາດຕິພີ່ນ້ອງທັງຫຼາຍຈົ່ງມີຄວາມສຸກ.": "May this merit be shared with all my relatives. May they all be happy.",
+    "© 2026 ວັດເຊກະໝານກາງ (Wat Xekaman Kang). ສະງວນລິຂະສິດ / All Rights Reserved.": "© 2026 Wat Xekaman Kang. All rights reserved.",
+    "ສ້າງຂຶ້ນດ້ວຍຄວາມສັດທາໃນພຣະພຸດທະສາສະໜາ 🇱🇦": "Built with faith in Buddhism 🇱🇦",
+    "ພຣະອາຈານ ຄຳສະຫວັນ ເລື່ອມທິນິນ": "Venerable Khamsavanh Leuamthinin",
+    "ສູນລວມຈິດໃຈ, ທຳມະທານ ແລະ ມໍລະດົກທາງພຸດທະສາສະໜາ ລຸ່ມນ້ຳເຊກະໝານ. ຂໍໃຫ້ຜົນບຸນອັນເກີດຈາກການສຶກສາ ແລະ ຮ່ວມສ້າງບຸນ ຈົ່ງດົນບັນດານໃຫ້ທ່ານມີຄວາມສຸກ ຄວາມຈະເລີນ.": "A center of faith, Dhamma, and Buddhist heritage along the Sekaman River. May the merit from learning and making merit together bring you happiness and prosperity.",
+    "ຄະນະກໍາມະການບໍລິຫານງານ ອພສ ເມືອງສາມັກຄີໄຊ": "Administrative Committee, Samakkixay District",
+    "ຄະນະກໍາມາທິການສຶກສາສົງເມືອງ": "District Monastic Education Committee",
+    "ສະໄໝທີ VIII (2025-2030)": "8th Term (2025–2030)",
+    "ເລືອກພາສາ / Select Language": "Select Language",
+    "🇱🇦 ພາສາລາວ": "🇱🇦 Lao",
+    "1. 🇱🇦 ພາສາລາວ (Lao)": "1. 🇱🇦 Lao",
+    "ແຜນທີ່ຕຳແໜ່ງ ອັດຕະປື ເຊກະໝານ": "Attapeu Xekaman Location Map",
+    "ບ້ານເຊກະພານ, ເມືອງ ແລະ ແຂວງໃນເຂດລຸ່ມນ້ຳເຊກະພານ, ສປປ ລາວ": "Xekaman Village in the Sekaman River basin, Laos",
+    "ກະລຸນາປ້ອນຂໍ້ມູນເພື່ອອອກໃບອະນຸໂມທະນາບຸນດິຈິທັລ ສຳລັບເກັບໄວ້ເປັນສິຣິມົງຄົນ:": "Please enter the details for a digital merit certificate to keep as a blessing.",
+    "ຊື່ ແລະ ນາມສະກຸນ ຜູ້ບໍລິຈາກ": "Donor's Full Name",
+    "ຕົວຢ່າງ: ທ່ານ ສົມໄຊ ວົງສາ": "e.g. Mr. Somchai Vongsa",
+    "ຈຳນວນເງິນບໍລິຈາກ (ກີບ / ບາດ)": "Donation Amount (Kip / Baht)",
+    "ຕົວຢ່າງ: 100,000 ກີບ": "e.g. 100,000 Kip",
+    "ວັດຖຸປະສົງການເຮັດບຸນ": "Merit-Making Purpose",
+    "ບູລະນະພຣະອຸໂບສົດ (ສິມ)": "Restore the Ordination Hall (Sim)",
+    "ຄ່ານ້ຳ-ຄ່າໄຟຟ້າວັດ": "Temple Water and Electricity Costs",
+    "ທຶນການສຶກສາພຣະພິກຂຸ-ສາມະເນນ": "Education Fund for Monks and Novices",
+    "ກອງທຶນສາທາລະນະກຸສົນ": "Public Charity Fund",
+    "ສ້າງໃບອະນຸໂມທະນາບຸນ": "Create Merit Certificate",
+    "ອອກໃບອະນຸໂມທະນາບຸນ": "Create Merit Certificate",
+    "ໃບອະນຸໂມທະນາບຸນ": "Merit Certificate",
+    "ຂໍອະນຸໂມທະນາບຸນຂອບໃຈ ນຳ:": "With gratitude for the merit-making of:",
+    "ໄດ້ຮ່ວມບໍລິຈາກເຮັດບຸນ ຈຳນວນເງິນ:": "has donated for merit-making in the amount of:",
+    "ເພື່ອວັດຖຸປະສົງ:": "For the purpose of:",
+    "ວັນທີ:": "Date:",
+    "ໃບອະນຸໂມທະນາບຸນດິຈິທັລ": "Digital Merit Certificate",
+    "ສ້າງໃບອະນຸໂມທະນາບຸນສຳເລັດ! ສາທຸ": "Merit certificate created successfully! Sadhu.",
+    "ສຳເລັດ": "Complete",
+    "ຂໍໃຫ້ຄອບຄົວມີຄວາມສຸກ ສຸຂະພາບແຂງແຮງ": "May the family be happy and healthy",
+    "5 ນາທີກ່ອນ": "5 minutes ago",
+    "ຂໍໃຫ້ການຄ້າຂາຍຈະເລີນຮຸ່ງເຮືອງ": "May business prosper",
+    "18 ນາທີກ່ອນ": "18 minutes ago",
+    "ຂໍໃຫ້ແຄ້ວຄາດປອດໄພຈາກໂຣກໄພທັງປວງ": "May you be safe from all illnesses",
+    "1 ຊົ່ວໂມງກ່ອນ": "1 hour ago",
+    "ເພິ່ງນີ້": "Just now",
+    "ສາທຸ!": "Sadhu!",
+    "ທ່ານໄດ້ໄຕ້ທຽນ ແລະ ຖວາຍດອກບົວສຳເລັດແລ້ວ! ຂໍໃຫ້ສົມປະຖາໜາ": "Your candle and lotus offering was successful! May your wish be fulfilled.",
+    "ສາທຸ ສາທຸ": "Sadhu, Sadhu",
+    "ລຶບປະວັດການເຮັດບຸນແລ້ວ": "Merit-making history cleared",
+    "ສຽງລະຄັງວັດດັງຂຶ້ນ... ສາທຸ": "The temple bell rings… Sadhu.",
+    "ສຽງຄ້ອງວັດດັງຂຶ້ນ... ສາທຸ": "The temple gong rings… Sadhu.",
+    "ສຽງສັກສິດ": "Sacred Sound",
+    "ສຸ່ມທຳມະຄຳສອນໃໝ່ແລ້ວ": "A new Dhamma teaching has been selected",
+    "ທຳມະທານ": "Dhamma Gift",
+    "ຄັດລອກຂໍ້ຄວາມທຳມະຄຳສອນສຳເລັດແລ້ວ!": "Dhamma teaching copied successfully!",
+    "ຄັດລອກແລ້ວ": "Copied",
+    "ຄັດລອກເລກບັນຊີ BCEL 160-12-00-00123456-001 ສຳເລັດແລ້ວ!": "BCEL account number 160-12-00-00123456-001 copied successfully!",
+    "ສົ່ງຂໍ້ຄວາມສຳເລັດແລ້ວ!": "Message sent successfully!",
+    "ສົ່ງຂໍ້ຄວາມສຳເລັດ": "Message Sent",
+    "ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່": "An error occurred. Please try again.",
+    "ສົ່ງບໍ່ສຳເລັດ": "Message Not Sent",
+    "📖 ອ່ານຄຳສອນເພີ່ມເຕີມ:": "📖 Read more Dhamma teachings:",
+    "- ພຣະພຸດທະໂອວາດ -": "— Teaching of the Buddha —",
+    "- ພຣະທຳມະຄຳສອນ -": "— Dhamma Teaching —",
+    "- ຄຳສອນພຣະທຳ -": "— Dhamma Teaching —",
+    "- ໂອວາດປາຕິໂມກ -": "— Ovada Patimokkha —",
+    "- ຄຳສອນເຕືອນໃຈ -": "— Reflection —",
+    "- ຂໍ້ຄິດເຕືອນໃຈ -": "— Reflection —",
+    "- ມັງຄະລາສູດ -": "— Mangala Sutta —",
+    "- ຂໍ້ຄິດປະຕິບັດ -": "— Practical Guidance —",
+    "- ພິຈາລະນາມໍຣະນະສະຕິ -": "— Reflection on Death —",
+    "- ສຸພາສິດເຕືອນໃຈ -": "— Wise Saying —"
+});
+
+// English counterparts for all 100 rotating Dhamma quotations, in QUOTES order.
+autoTranslations.en.quotes = [
+    "Avoid all evil, cultivate good, and purify your mind — this is the teaching of all Buddhas.",
+    "Generosity conquers stinginess, and loving-kindness conquers anger.",
+    "A well-trained mind brings happiness.",
+    "Heedfulness is the path to the deathless.",
+    "One is one's own refuge; who else could be one's refuge?",
+    "Doing good brings good; doing evil brings evil. The law of karma always bears fruit.",
+    "Patience is the highest spiritual practice.",
+    "The mindful are happy wherever they are.",
+    "Loving-kindness sustains the world.",
+    "Conquering oneself is better than winning a thousand battles.",
+    "Happiness arises from the peace of the mind.",
+    "The past is gone and the future has not arrived; live mindfully in the present.",
+    "Being angry with another is like lighting a fire to burn yourself.",
+    "Making merit is a noble treasure that accompanies one through every life.",
+    "Wisdom arises through reflection and practice.",
+    "Gratitude and appreciation are the marks of a good person.",
+    "Do not focus on the faults of others; examine your own faults.",
+    "Moral conduct brings happiness and peace to those who practice it.",
+    "Freedom from illness is the greatest gain.",
+    "Purity and impurity belong to oneself; no one can purify another.",
+    "Those who give are loved by many.",
+    "Contentment is the greatest wealth.",
+    "Familiarity is the greatest kinship.",
+    "Nibbana is the highest happiness.",
+    "Refraining from all evil brings peace.",
+    "Those who persevere can overcome suffering.",
+    "Beautiful and truthful speech is worth more than a thousand meaningless words.",
+    "Keeping good company leads to progress.",
+    "Avoiding foolish company is the highest blessing.",
+    "Honoring those worthy of honor is the highest blessing.",
+    "Caring for one's parents is the highest blessing.",
+    "Practicing the Dhamma is the highest blessing.",
+    "A bright mind leads to a good destination.",
+    "Anger destroys friendship and peace.",
+    "Greed brings endless suffering.",
+    "Delusion blinds us to the truth.",
+    "Mindfulness protects the mind from falling into wrong paths.",
+    "The Five Precepts are an island of protection that brings peace to life.",
+    "Refraining from killing brings a long life.",
+    "Refraining from stealing brings security in one's possessions.",
+    "Refraining from sexual misconduct brings happiness to the family.",
+    "Refraining from false speech brings respect from others.",
+    "Refraining from intoxicants brings clear awareness and wisdom.",
+    "The good one has done never disappears.",
+    "Time waits for no one; hurry to do good today.",
+    "Death is certain, but no one knows when it will come.",
+    "All things arise, remain, and pass away according to their nature.",
+    "All conditioned things are impermanent; reflect with care and diligence.",
+    "Forgiveness brings peace to the heart of the one who forgives.",
+    "Each breath in and out is life's precious gift.",
+    "Be a good listener more than a speaker of empty words.",
+    "Humility brings kindness from elders.",
+    "Honesty and integrity are the foundation of a good life.",
+    "Diligence and thrift are virtues that lead to prosperity.",
+    "Contentment brings happiness according to one's circumstances.",
+    "Jealousy destroys one's own happiness.",
+    "True love is wishing for others to be happy.",
+    "Compassion is wishing for others to be free from suffering.",
+    "Sympathetic joy is rejoicing in the goodness of others.",
+    "Equanimity is letting go with wisdom.",
+    "Making merit is not only giving; it also includes keeping moral precepts and meditating.",
+    "Meditation gives the mind strength and steady peace.",
+    "Wisdom is the light that guides us through darkness.",
+    "Where there is effort, there is success.",
+    "Obstacles are important lessons in training oneself.",
+    "Accepting the truth is the first step toward peace.",
+    "Do not tie your happiness to the words of others.",
+    "Criticism is like the wind: it comes and goes; do not keep it in your heart.",
+    "Goodness done in the dark will shine in the light.",
+    "Listening to the Dhamma at the right time is the highest blessing.",
+    "Discussing the Dhamma at the right time is the highest blessing.",
+    "Respect is the highest blessing.",
+    "Humility is the highest blessing.",
+    "Patience is the highest blessing.",
+    "Being teachable is the highest blessing.",
+    "Seeing spiritual practitioners is the highest blessing.",
+    "Keeping the mind unshaken by worldly conditions is the highest blessing.",
+    "A sorrowless mind is the highest blessing.",
+    "A mind free from defilement is the highest blessing.",
+    "A serene mind is the highest blessing.",
+    "Gratitude to one's benefactors brings prosperity.",
+    "When suffering arises, use mindfulness and wisdom to resolve it.",
+    "Do not let anger control your actions.",
+    "Forgiveness is freeing oneself from suffering.",
+    "True happiness is not found in possessions, but in the mind.",
+    "Be a creator of happiness for those around you.",
+    "Having good friends leads us along a good path.",
+    "Guarding the senses leads to peace.",
+    "Carelessness is the path to decline.",
+    "Reflect on aging, illness, and death so that you do not become careless.",
+    "Love of the Dhamma brings happiness.",
+    "Those who practice the Dhamma are protected by it.",
+    "Peace of mind arises from letting go of craving.",
+    "Training oneself is the greatest thing.",
+    "Freedom from bias brings justice.",
+    "Live every day with kindness and wisdom.",
+    "Giving knowledge is the highest gift.",
+    "Happiness follows those with a good mind like a shadow.",
+    "Suffering follows those with an unwholesome mind like a wheel follows an ox's hoof.",
+    "Freedom from mental illness is freedom from defilements."
+];
+
+function getPreferredLanguage() {
+    return localStorage.getItem('preferred_lang') || 'lo';
+}
+
+function translateText(text, lang = getPreferredLanguage()) {
+    const dict = autoTranslations[lang];
+    return dict && typeof dict[text] === 'string' ? dict[text] : text;
+}
+
+function translateDom(root, lang = getPreferredLanguage()) {
+    const dict = autoTranslations[lang];
+    if (!dict || !root) return;
+
+    const ignoredTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT']);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+            return node.parentElement && !ignoredTags.has(node.parentElement.tagName)
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_REJECT;
+        }
+    });
+
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) textNodes.push(node);
+    textNodes.forEach(textNode => {
+        const original = textNode.nodeValue.trim();
+        if (dict[original]) {
+            textNode.nodeValue = textNode.nodeValue.replace(original, dict[original]);
+            return;
+        }
+
+        let translated = textNode.nodeValue;
+        Object.entries(dict).forEach(([source, translation]) => {
+            if (typeof translation === 'string' && source && translated.includes(source)) {
+                translated = translated.replaceAll(source, translation);
+            }
+        });
+        textNode.nodeValue = translated;
+    });
+
+    const elements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+    elements.forEach(element => {
+        ['placeholder', 'title', 'alt', 'aria-label'].forEach(attribute => {
+            const original = element.getAttribute(attribute);
+            if (original && dict[original.trim()]) element.setAttribute(attribute, dict[original.trim()]);
+        });
+        if (element.tagName === 'OPTION' && dict[element.value]) element.value = dict[element.value];
+    });
+}
+
+function translateHtml(html, lang = getPreferredLanguage()) {
+    if (lang === 'lo') return html;
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    translateDom(template.content, lang);
+    return template.innerHTML;
+}
+
 // 2. ฟังก์ชันเปิด Pop-up แสดงตัวเลือก 2 ภาษา
 function openLangModal() {
     const oldModal = document.getElementById('custom-lang-modal');
@@ -1601,7 +1948,7 @@ function openLangModal() {
             </div>
         </div>
     `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.body.insertAdjacentHTML('beforeend', translateHtml(modalHtml));
 }
 
 // 3. ปิด Pop-up
@@ -1626,25 +1973,11 @@ function selectLanguage(lang, label) {
         return;
     }
 
-    const dict = autoTranslations[lang];
-    if (!dict) return;
-
-    // แปลข้อความโหนดตัวอักษรทั้งหมดบนเว็บ
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-    let node;
-    while (node = walker.nextNode()) {
-        const text = node.nodeValue.trim();
-        if (dict[text]) {
-            node.nodeValue = node.nodeValue.replace(text, dict[text]);
-        }
-    }
-
-    // แปลข้อความใน Placeholder
-    document.querySelectorAll('input, textarea').forEach(input => {
-        if (input.placeholder && dict[input.placeholder.trim()]) {
-            input.placeholder = dict[input.placeholder.trim()];
-        }
-    });
+    if (!autoTranslations[lang]) return;
+    document.documentElement.lang = lang;
+    document.title = translateText(document.title, lang);
+    translateDom(document.body, lang);
+    renderDevotees();
 }
 
 // 5. โหลดภาษาเดิมที่เลือกไว้อัตโนมัติเมื่อเปิดเว็บ
