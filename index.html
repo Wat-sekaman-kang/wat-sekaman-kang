@@ -1122,18 +1122,24 @@
         }
 
         function openMapModal() {
-            const content = `
-                <div class="space-y-4 text-center">
-                    <div class="bg-amber-100 p-6 rounded-2xl border border-amber-300">
-                        <i class="fa-solid fa-map-location-dot text-5xl text-laoMaroon mb-3"></i>
-                        <h4 class="font-bold text-lg text-laoMaroon font-lao-serif">ແຜນທີ່ຕຳແໜ່ງ ວັດເຊກະໝານກາງ</h4>
-                        <p class="text-xs text-gray-600 mt-2">ບ້ານເຊກະໝານ, ເມືອງ ແລະ ແຂວງໃນເຂດລຸ່ມນ້ຳເຊກະໝານ, ສປປ ລາວ</p>
-                    </div>
-                    <p class="text-sm text-gray-700">ທ່ານສາມາດເດີນທາງຕາມເສັ້ນທາງຫຼັກເລກທີ 16A ແຄມນ້ຳເຊກະໝານ. ມີປ້າຍບອກທາງຈະແຈ້ງຕະຫຼອດເສັ້ນທາງ.</p>
-                </div>
-            `;
-            openModal("ແຜນທີ່ ແລະ ການເດີນທາງ", content);
-        }
+    const content = `
+        <div class="space-y-4 text-center">
+            <div class="bg-amber-100 p-6 rounded-2xl border border-amber-300">
+                <i class="fa-solid fa-map-location-dot text-5xl text-laoMaroon mb-3"></i>
+                <h4 class="font-bold text-lg text-laoMaroon font-lao-serif">ແຜນທີ່ຕຳແໜ່ງ ອັດຕະປື ເຊກະພານ</h4>
+                <p class="text-xs text-gray-600 mt-2">ບ້ານເຊກະພານ, ເມືອງ ແລະ ແຂວງໃນເຂດລຸ່ມນ້ຳເຊກະພານ, ສປປ ລາວ</p>
+            </div>
+            <p class="text-sm text-gray-700">ທ່ານສາມາດເດີນທາງຕາມເສັ້ນທາງຫຼັກເລກທີ 16A ແຄມນ້ຳເຊກະພານ.</p>
+            <div class="pt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=วัดเซกะพานกลาง" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all text-sm">
+                    <i class="fa-solid fa-location-arrow"></i>
+                    <span>ນຳທາງດ້ວຍ Google Maps</span>
+                </a>
+            </div>
+        </div>
+    `;
+    openModal("ແຜນທີ່ ແລະ ການເດີນທາງ", content);
+}
 
         function openReceiptGeneratorModal() {
             const content = `
