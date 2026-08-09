@@ -1403,11 +1403,36 @@
             showToast("ຄັດລອກເລກບັນຊີ BCEL 160-12-00-00123456-001 ສຳເລັດແລ້ວ!", "ຄັດລອກແລ້ວ", "fa-copy");
         }
 
-        function handleContactSubmit(e) {
-            e.preventDefault();
-            showToast("ຂອບໃຈສຳລັບການຕິດຕໍ່! ຂ້າພະເຈົ້າຈະຕອບກັບຂໍ້ຄວາມຂອງທ່ານໂດຍໄວ.", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
-            e.target.reset();
-        }
+       function handleContactSubmit(e) {
+    e.preventDefault();
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzBVvEjvBW0kl2N7idSsYIAlkkTZq71AdE1vcmJBEseTlyPdGjXr_ld9Sfm2PKAIkPtiw/exec';
+
+    const inputs = e.target.querySelectorAll('input[type="text"]');
+    const formData = {
+        name: inputs[0] ? inputs[0].value : '',
+        phone: e.target.querySelector('input[type="tel"]') ? e.target.querySelector('input[type="tel"]').value : '',
+        subject: inputs[1] ? inputs[1].value : '',
+        message: e.target.querySelector('textarea') ? e.target.querySelector('textarea').value : ''
+    };
+
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(() => {
+        showToast("ສົ່ງຂໍ້ຄວາມສຳເລັດແລ້ວ!", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
+        e.target.reset();
+    })
+    .catch(error => {
+        showToast("ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່", "ສົ່ງບໍ່ສຳເລັດ", "fa-exclamation-triangle");
+        console.error('Error!', error.message);
+    });
+    }
         // 1. ฟังก์ชันแชร์ลง Facebook
 function shareToFacebook() {
     try {
