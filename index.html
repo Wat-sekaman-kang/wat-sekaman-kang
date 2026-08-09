@@ -1406,7 +1406,6 @@
 function handleContactSubmit(e) {
     e.preventDefault();
 
-    // ວາງ URL ໃໝ່ໃສ່ບ່ອນນີ້
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyRNp_doGL4rXXaGYJWxE8KgLB_DJiJ5cx-EMn6qxmcSJdLcPdqP4AdFudpmV406Rxo5A/exec';
 
     const form = e.target;
@@ -1430,7 +1429,13 @@ function handleContactSubmit(e) {
     })
     .then(() => {
         showToast("ສົ່ງຂໍ້ຄວາມສຳເລັດແລ້ວ!", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
-        form.reset();
+        
+        // ລ້າງຂໍ້ຄວາມໃນช่องກອກທັງໝົດ
+        if (typeof form.reset === 'function') {
+            form.reset();
+        }
+        inputs.forEach(input => input.value = '');
+        if (textarea) textarea.value = '';
     })
     .catch(error => {
         showToast("ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່", "ສົ່ງບໍ່ສຳເລັດ", "fa-exclamation-triangle");
