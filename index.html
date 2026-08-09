@@ -1434,46 +1434,7 @@
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
-        }
-        function shareToFacebook() {
-    const text = document.getElementById('dhammaText').innerText;
-    const source = document.getElementById('dhammaSource').innerText;
-    const pageUrl = window.location.href;
-    const facebookUrl = https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(text + " " + source)};
-    window.open(facebookUrl, '_blank', 'width=600,height=400');
-}
-
-function shareToWhatsApp() {
-    const text = document.getElementById('dhammaText').innerText;
-    const source = document.getElementById('dhammaSource').innerText;
-    const pageUrl = window.location.href;
-    const message = *"${text}"*\n${source}\n\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມໄດ້ທີ່: ${pageUrl};
-    const whatsappUrl = https://api.whatsapp.com/send?text=${encodeURIComponent(message)};
-    window.open(whatsappUrl, '_blank');
-}
-
-        /* Initial Setup */
-        window.onload = function() {
-            renderDevotees();
-        };// ฟังก์ชันแชร์ Facebook
-function shareToFacebook() {
-    const text = document.getElementById('dhammaText').innerText;
-    const source = document.getElementById('dhammaSource').innerText;
-    const pageUrl = window.location.href;
-    const facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(pageUrl) + "&quote=" + encodeURIComponent(text + " " + source);
-    window.open(facebookUrl, '_blank', 'width=600,height=400');
-}
-
-// ฟังก์ชันแชร์ WhatsApp
-function shareToWhatsApp() {
-    const text = document.getElementById('dhammaText').innerText;
-    const source = document.getElementById('dhammaSource').innerText;
-    const pageUrl = window.location.href;
-    const message = "*" + text + "*\n" + source + "\n\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມ: " + pageUrl;
-    const whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
-    window.open(whatsappUrl, '_blank');
-}
-
+ 
     </script>
 </body>
 </html>
