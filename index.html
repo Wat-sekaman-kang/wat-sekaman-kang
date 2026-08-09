@@ -535,13 +535,13 @@
             <i class="fa-solid fa-quote-left text-6xl text-laoGold/20 absolute top-4 left-6"></i>
             <i class="fa-solid fa-quote-right text-6xl text-laoGold/20 absolute bottom-4 right-6"></i>
 
-           <div class="relative z-10 max-w-3xl mx-auto">
-    <p class="text-xl sm:text-3xl font-lao-serif font-bold text-laoMaroon leading-relaxed mb-6">
-        <span id="dhammaText">"ຄວາມເວັ້ນຈາກບາບທັງປວງ, ການຍັງກຸສົນໃຫ້ເຖິງພ້ອມ, ການເຮັດຈິດໃຈຂອງຕົນໃຫ້ຜ່ອງໃສ ນີ້ແມ່ນຄຳສອນຂອງພຣະພຸດທະເຈົ້າທັງຫຼາຍ."</span>
-    </p>
-    <p class="text-sm font-semibold text-laoGoldDark uppercase tracking-wider mb-8">
-        <span id="dhammaSource">- ພຣະພຸດທະໂອວາດ -</span>
-    </p>
+            <div class="relative z-10 max-w-3xl mx-auto">
+                <p id="dhammaText" class="text-xl sm:text-3xl font-lao-serif font-bold text-laoMaroon leading-relaxed mb-6">
+                    "ຄວາມເວັ້ນຈາກບາບທັງປວງ, ການຍັງກຸສົນໃຫ້ເຖິງພ້ອມ, ການເຮັດຈິດໃຈຂອງຕົນໃຫ້ຜ່ອງໃສ ນີ້ແມ່ນຄຳສອນຂອງພຣະພຸດທະເຈົ້າທັງຫຼາຍ."
+                </p>
+                <p id="dhammaSource" class="text-sm font-semibold text-laoGoldDark uppercase tracking-wider mb-8">
+                    - ພຣະທຳມະຄຳສອນ ໂອວາດປາຕິໂມກ -
+                </p>
 
                 <div class="flex flex-wrap justify-center gap-4">
                     <button onclick="getRandomQuote()" class="bg-laoMaroon text-laoGold font-semibold px-6 py-3 rounded-full shadow-md hover:bg-laoMaroonDark transition-all active:scale-95 flex items-center gap-2">
@@ -552,16 +552,6 @@
                         <i class="fa-solid fa-copy"></i>
                         <span>ຄັດລອກຂໍ້ຄວາມ</span>
                     </button>
-                    <!-- ปุ่มแชร์ Facebook -->
-                    <button onclick="shareToFacebook()" class="btn-dhamma" style="background-color: #1877f2; color: #fff; padding: 10px 18px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">
-                    <i class="fab fa-facebook"></i> ແຊຣ໌ Facebook
-                    </button>
-
-                    <!-- ปุ่มแชร์ WhatsApp -->
-                    <button onclick="shareToWhatsApp()" class="btn-dhamma" style="background-color: #25d366; color: #fff; padding: 10px 18px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">
-                    <i class="fab fa-whatsapp"></i> ສົ່ງທາງ WhatsApp
-                    </button>
-
                 </div>
             </div>
         </div>
@@ -1434,10 +1424,12 @@
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
- /* Initial Setup */
-window.onload = function() {
-    renderDevotees();
-};
-</script>
+        }
+
+        /* Initial Setup */
+        window.onload = function() {
+            renderDevotees();
+        };
+    </script>
 </body>
 </html>
