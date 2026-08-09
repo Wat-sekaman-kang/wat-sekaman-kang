@@ -552,6 +552,17 @@
                         <i class="fa-solid fa-copy"></i>
                         <span>ຄັດລອກຂໍ້ຄວາມ</span>
                     </button>
+                    <!-- ปุ่มแชร์ Facebook -->
+        <button type="button" onclick="shareToFacebook()" style="background-color: #1877f2;" class="text-white font-semibold px-5 py-3 rounded-full shadow-md hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
+            <i class="fab fa-facebook"></i>
+            <span>ແບ່ງປັນ Facebook</span>
+        </button>
+
+        <!-- ปุ่มแชร์ WhatsApp -->
+        <button type="button" onclick="shareToWhatsApp()" style="background-color: #25d366;" class="text-white font-semibold px-5 py-3 rounded-full shadow-md hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
+            <i class="fab fa-whatsapp"></i>
+            <span>ສົ່ງທາງ WhatsApp</span>
+        </button>
                 </div>
             </div>
         </div>
@@ -1420,6 +1431,53 @@
             showToast("ຂອບໃຈສຳລັບການຕິດຕໍ່! ຂ້າພະເຈົ້າຈະຕອບກັບຂໍ້ຄວາມຂອງທ່ານໂດຍໄວ.", "ສົ່ງຂໍ້ຄວາມສຳເລັດ", "fa-paper-plane");
             e.target.reset();
         }
+        // 1. ฟังก์ชันแชร์ลง Facebook
+function shareToFacebook() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        
+        var text = textEl ? textEl.innerText.trim() : '';
+        var source = sourceEl ? sourceEl.innerText.trim() : '';
+        var pageUrl = window.location.href;
+
+        // รวมข้อความคำสอนและแหล่งที่มา
+        var shareContent = text + (source ? " " + source : "");
+
+        // สร้าง Link สำหรับแชร์ลง Facebook
+        var facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + 
+                          encodeURIComponent(pageUrl) + 
+                          "&quote=" + encodeURIComponent(shareContent);
+
+        // เปิด Pop-up หน้าแชร์ Facebook
+        window.open(facebookUrl, '_blank', 'width=600,height=500,location=no,menubar=no,status=no,toolbar=no');
+    } catch (err) {
+        console.error("Facebook Share Error:", err);
+    }
+}
+
+// 2. ฟังก์ชันส่งทาง WhatsApp
+function shareToWhatsApp() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        
+        var text = textEl ? textEl.innerText.trim() : '';
+        var source = sourceEl ? sourceEl.innerText.trim() : '';
+        var pageUrl = window.location.href;
+
+        // จัดรูปแบบข้อความ WhatsApp (มีตัวหนาและลิงก์อ่านเพิ่มเติม)
+        var message = "*" + text + "*\n" + (source ? source + "\n" : "") + "\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມ: " + pageUrl;
+
+        // สร้าง Link สำหรับส่ง WhatsApp
+        var whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+
+        // เปิดแอปพลิเคชัน WhatsApp หรือเว็บ WhatsApp
+        window.open(whatsappUrl, '_blank');
+    } catch (err) {
+        console.error("WhatsApp Share Error:", err);
+    }
+}
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
