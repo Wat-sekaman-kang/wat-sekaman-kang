@@ -1420,6 +1420,99 @@ function shareToWhatsApp() {
 window.onload = function() {
     renderDevotees();
 };
+            window.getRandomQuote = function() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        
+        // ดึงจาก QUOTES เดิมที่มีในไฟล์
+        if (typeof QUOTES !== 'undefined' && QUOTES.length > 0 && textEl && sourceEl) {
+            var randomIndex = Math.floor(Math.random() * QUOTES.length);
+            var selected = QUOTES[randomIndex];
+            
+            textEl.innerText = selected.text || selected.quote || '';
+            sourceEl.innerText = selected.source || selected.author || '';
+        }
+    } catch (e) {
+        console.error("getRandomQuote Error:", e);
+    }
+};
+
+// 2. ฟังก์ชันคัดลอกข้อความ
+window.copyDhammaQuote = function() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        var text = textEl ? textEl.innerText.trim() : '';
+        var source = sourceEl ? sourceEl.innerText.trim() : '';
+        var fullContent = text + (source ? " " + source : "");
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(fullContent).then(function() {
+                alert('ຄັດລອກຂໍ້ຄວາມສຳເລັດແລ້ວ!');
+            }).catch(function() {
+                fallbackCopy(fullContent);
+            });
+        } else {
+            fallbackCopy(fullContent);
+        }
+    } catch (e) {
+        console.error("copyDhammaQuote Error:", e);
+    }
+};
+
+function fallbackCopy(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        alert('ຄັດລອກຂໍ້ຄວາມສຳເລັດແລ້ວ!');
+    } catch (err) {
+        alert('ບໍ່ສາມາດຄັດລອກຂໍ້ຄວາມໄດ້');
+    }
+    document.body.removeChild(textArea);
+}
+
+// 3. ฟังก์ชันแชร์ Facebook
+window.shareToFacebook = function() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        var text = textEl ? textEl.innerText.trim() : '';
+        var source = sourceEl ? sourceEl.innerText.trim() : '';
+        var pageUrl = window.location.href;
+
+        var shareContent = text + (source ? " " + source : "");
+        var facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(pageUrl) + "&quote=" + encodeURIComponent(shareContent);
+        
+        window.open(facebookUrl, '_blank', 'width=600,height=500');
+    } catch (e) {
+        console.error("shareToFacebook Error:", e);
+    }
+};
+
+// 4. ฟังก์ชันแชร์ WhatsApp
+window.shareToWhatsApp = function() {
+    try {
+        var textEl = document.getElementById('dhammaText');
+        var sourceEl = document.getElementById('dhammaSource');
+        var text = textEl ? textEl.innerText.trim() : '';
+        var source = sourceEl ? sourceEl.innerText.trim() : '';
+        var pageUrl = window.location.href;
+
+        var message = "*" + text + "*\n" + source + "\n\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມ: " + pageUrl;
+        var whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+        
+        window.open(whatsappUrl, '_blank');
+    } catch (e) {
+        console.error("shareToWhatsApp Error:", e);
+    }
+};
 </script>
 </body>
 </html>
