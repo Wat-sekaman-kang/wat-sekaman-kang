@@ -710,7 +710,98 @@
     </div>
 </div>
 
-<script>
+<script>  function getRandomQuote() {
+        try {
+            var textEl = document.getElementById('dhammaText');
+            var sourceEl = document.getElementById('dhammaSource');
+            var list = (typeof QUOTES !== 'undefined') ? QUOTES : [];
+            
+            if (list.length > 0 && textEl && sourceEl) {
+                var randomIndex = Math.floor(Math.random() * list.length);
+                var item = list[randomIndex];
+                textEl.innerText = item.text || item.quote || '';
+                sourceEl.innerText = item.source || item.author || '';
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function copyDhammaQuote() {
+        try {
+            var textEl = document.getElementById('dhammaText');
+            var sourceEl = document.getElementById('dhammaSource');
+            var text = textEl ? textEl.innerText.trim() : '';
+            var source = sourceEl ? sourceEl.innerText.trim() : '';
+            var fullContent = text + (source ? " " + source : "");
+
+            if (!fullContent) return;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(fullContent).then(function() {
+                    alert('ຄັດລອກຂໍ້ຄວາມສຳເລັດແລ້ວ!');
+                }).catch(function() {
+                    execCopy(fullContent);
+                });
+            } else {
+                execCopy(fullContent);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function execCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            alert('ຄັດລອກຂໍ້ຄວາມສຳເລັດແລ້ວ!');
+        } catch (e) {
+            alert('ບໍ່ສາມາດຄັດລອກໄດ້');
+        }
+        document.body.removeChild(ta);
+    }
+
+    function shareToFacebook() {
+        try {
+            var textEl = document.getElementById('dhammaText');
+            var sourceEl = document.getElementById('dhammaSource');
+            var text = textEl ? textEl.innerText.trim() : '';
+            var source = sourceEl ? sourceEl.innerText.trim() : '';
+            var pageUrl = window.location.href;
+
+            var fullContent = text + (source ? " " + source : "");
+            var url = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(pageUrl) + "&quote=" + encodeURIComponent(fullContent);
+            
+            window.open(url, '_blank', 'width=600,height=500');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function shareToWhatsApp() {
+        try {
+            var textEl = document.getElementById('dhammaText');
+            var sourceEl = document.getElementById('dhammaSource');
+            var text = textEl ? textEl.innerText.trim() : '';
+            var source = sourceEl ? sourceEl.innerText.trim() : '';
+            var pageUrl = window.location.href;
+
+            var msg = "*" + text + "*\n" + source + "\n\n📖 ອ່ານຄຳສອນເພີ່ມເຕີມ: " + pageUrl;
+            var url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
+            
+            window.open(url, '_blank');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+</script>
     function openQRImage() {
         var profileImgSrc = document.getElementById('qrImgSrc');
         var modal = document.getElementById('qrImageModal');
