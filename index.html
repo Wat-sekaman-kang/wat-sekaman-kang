@@ -1507,6 +1507,258 @@ function shareToWhatsApp() {
         window.onload = function() {
             renderDevotees();
         };
+        // =========================================================================
+// คลัง Data Key และคำแปล 3 ภาษา (Lao / Thai / English) สำหรับวัดเซกะพานกลาง
+// คัดลอกชุดตัวแปร translations นี้ไปวางในไฟล์ index.html ได้ทันที
+// =========================================================================
+
+const translations = {
+    // ==========================================
+    // 1. 🇱🇦 ພາສາລາວ (Lao - ภาษาหลักของเว็บ)
+    // ==========================================
+    lo: {
+        // --- แถบประกาศด้านบนสุด (Top Announcement Bar) ---
+        announcement_text: "ຂໍຕ້ອນຮັບສູ່ <b>ວັດເຊກະພານກາງ</b> ຍິນດີຕ້ອນຮັບທຸກທ່ານ",
+        btn_listen_bell: "ຟັງສຽງຮັງ",
+        btn_listen_gong: "ຟັງສຽງກອງ",
+        next_monk_day: "ວັນພຣະຕໍ່ໄປ: 15 ຄ່ຳ",
+        lang_btn_label: "1. 🇱🇦 ພາສາລາວ",
+
+        // --- แถบเมนูหลัก (Header / Navbar) ---
+        site_name: "ວັດເຊກະພານກາງ",
+        site_location: "ບ້ານເຊກະພານ, ເມືອງ ສາມັກຄີໄຊ, ແຂວງ ອັດຕະປື",
+        nav_home: "ໜ້າຫຼັກ",
+        nav_about: "ກ່ຽວກັບວັດ",
+        nav_activities: "ກິດຈະກຳວັດ",
+        nav_donation: "ຮ່ວມບໍລິຈາກ/ທຳບຸນ",
+        nav_contact: "ຕິດຕໍ່ເຮົາ",
+
+        // --- ส่วนต้อนรับหลัก (Hero Section) ---
+        hero_badge: "ສູນລວມຈິດໃຈ ແລະ ພຣະພຸດທະສາສະໜາ",
+        hero_title: "ວັດເຊກະພານກາງ",
+        hero_subtitle: "ບ້ານເຊກະພານ, ເມືອງ ສາມັກຄີໄຊ, ແຂວງ ອັດຕະປື, ສປປ ລາວ",
+        btn_org_chart: "ເຂົ້າເບິ່ງທ່ານຮູບສະມາຊິກພາຍໃນວັດ",
+
+        // --- ส่วนประวัติความเป็นมา (About Section) ---
+        about_sub: "ກ່ຽວກັບເຮົາ",
+        about_title: "ປະວັດຄວາມເປັນມາຂອງວັດ",
+        about_p1: "ວັດເຊກະພານກາງ ຕັ້ງຢູ່ບ້ານເຊກະພານ, ເມືອງສາມັກຄີໄຊ, ແຂວງອັດຕະປື, ສປປ ລາວ ເປັນສາສະນະສະຖານທີ່ສຳຄັນອັນເປັນສູນລວມຈິດໃຈຂອງພຸດທະສາສະນິກະຊົນໃນເຂດລຸ່ມນ້ຳເຊກະພານ.",
+        about_p2: "ວັດแห่งນີ້ເປັນສູນກາງໃນການປະກອບພິທີກຳທາງພຣະພຸດທະສາສະໜາ, ອົບຮົມສັ່ງສອນສີລະທຳ, ຕະຫຼອດຮອດການສືບສານປະເພນີອັນດີງາມຂອງທ້ອງຖິ່ນໃຫ້ຄົງຢູ່ສືບໄປ.",
+
+        // --- ส่วนกิจกรรมและภาพถ่าย (Activities & Gallery) ---
+        activities_sub: "ກິດຈະກຳ & ງານບຸນ",
+        activities_title: "ກິດຈະກຳ ແລະ ງານບຸນປະເພນີ",
+        activities_desc: "ພາບບັນຍາກາດການປະກອບພິທີກຳທາງສາສະໜາ ແລະ ກິດຈະກຳພາຍໃນວັດເຊກະພານກາງ.",
+        btn_view_gallery: "ເບິ່ງຮູບພາບທັງໝົດ",
+
+        // --- ส่วนร่วมทำบุญ / บริจาค (Donation Section) ---
+        donation_sub: "ຮ່ວມທຳບຸນ",
+        donation_title: "ຮ່ວມທຳບຸນ / ບໍລິຈາກສ້າງບຳລຸງວັດ",
+        donation_desc: "ເຊີນຊວນພຸດທະສາສະນິກະຊົນຮ່ວມທຳບຸນສົມທົບທຶນຕາມກຳລັງສັດທາ ເພື່ອບູລະນະປະຕິສັງຂອນ ແລະ ພັດທະນາວັດເຊກະພານກາງ.",
+        bank_name: "ບັນຊີ ທະນາຄານການຄ້າຕ່າງປະເທດລາວ (BCEL)",
+        account_name_label: "ຊື່ບັນຊີ: ວັດເຊກະພານກາງ ( Wat Sekaman Kang )",
+        account_no_label: "ເລກບັນຊີ:",
+        btn_copy_acc: "ຄັດລອກເລກບັນຊີ",
+        acc_copied_alert: "ຄັດລອກເລກບັນຊີສຳເລັດແລ້ວ!",
+
+        // --- ส่วนติดต่อเราและแผนที่ (Contact & Map Section) ---
+        contact_sub: "LOCATION & CONTACT",
+        contact_title: "ຕິດຕໍ່ເຮົາ & ແຜນທີ່ການເດີນທາງ",
+        contact_address_label: "ທີ່ຢູ່",
+        address_detail: "ບ້ານເຊກະພານ, ເມືອງ ສາມັກຄີໄຊ, ແຂວງ ອັດຕະປື, ສປປ ລາວ",
+        contact_phone_label: "ໂທລະສັບ / WhatsApp",
+        contact_email_label: "ອີເມວ",
+        btn_map: "ເບິ່ງແຜນທີ່ຕຳແໜ່ງວັດ",
+
+        // --- ฟอร์มส่งข้อความ (Contact Form) ---
+        form_title: "ສົ່ງຂໍ້ຄວາມ ຫຼື ສອບຖາມຂໍ້ມູນ",
+        form_name_label: "ຊື່ ແລະ ນາມສະກຸນ",
+        form_name_placeholder: "ຕົວຢ່າງ: ທ່ານ ສົມໄຊ",
+        form_phone_label: "ເບີໂທລະສັບ",
+        form_phone_placeholder: "020 XXXXXXXX",
+        form_message_label: "ຂໍ້ຄວາມທີ່ຕ້ອງການສົ່ງ",
+        form_message_placeholder: "ພິມຂໍ້ຄວາມຂອງທ່ານຢູ່ທີ່ນີ້...",
+        form_submit_btn: "ສົ່ງຂໍ້ຄວາມ",
+
+        // --- หน้าต่าง Pop-up ต่างๆ (Modals) ---
+        lang_modal_title: "ເລືອກພາສາ / เลือกภาษา / Select Language",
+        map_modal_title: "ແຜນທີ່ ແລະ ການເດີນທາງ",
+        map_modal_heading: "ແຜນທີ່ຕຳແໜ່ງ ອັດຕະປື ເຊກະພານ",
+        map_modal_desc: "ທ່ານສາມາດເດີນທາງຕາມເສັ້ນທາງຫຼັກເລກທີ 16A ແຄມນ້ຳເຊກະພານ.",
+        btn_google_map: "ນຳທາງດ້ວຍ Google Maps",
+        org_modal_title: "ລະບົບການຈັດຕັ້ງພາຍໃນວັດ",
+        org_modal_heading: "ໂຄງສ້າງການບໍລິຫານ ແລະ ສະມາຊິກພາຍໃນວັດເຊກະພານກາງ",
+        modal_close_btn: "ປິດ",
+
+        // --- ส่วนท้ายเว็บ (Footer) ---
+        footer_copy: "© 2026 ວັດເຊກະພານກາງ ( Wat Sekaman Kang ). ສະຫງວນລິຂະສິດທັງໝົດ.",
+        footer_dev: "ພັດທະນາໂດຍ ທີມງານວັດເຊກະພານກາງ"
+    },
+
+    // ==========================================
+    // 2. 🇹🇭 ภาษาไทย (Thai)
+    // ==========================================
+    th: {
+        announcement_text: "ขอต้อนรับสู่ <b>วัดเซกะพานกลาง</b> ยินดีต้อนรับทุกท่าน",
+        btn_listen_bell: "ฟังเสียงระฆัง",
+        btn_listen_gong: "ฟังเสียงฆ้อง",
+        next_monk_day: "วันพระถัดไป: 15 ค่ำ",
+        lang_btn_label: "2. 🇹🇭 ภาษาไทย",
+
+        site_name: "วัดเซกะพานกลาง",
+        site_location: "บ้านเซกะพาน, เมืองสามัคคีไชย, แขวงอัตตะปือ",
+        nav_home: "หน้าแรก",
+        nav_about: "เกี่ยวกับวัด",
+        nav_activities: "กิจกรรมวัด",
+        nav_donation: "ร่วมทำบุญ/บริจาค",
+        nav_contact: "ติดต่อเรา",
+
+        hero_badge: "ศูนย์รวมจิตใจและพระพุทธศาสนา",
+        hero_title: "วัดเซกะพานกลาง",
+        hero_subtitle: "บ้านเซกะพาน, เมืองสามัคคีไชย, แขวงอัตตะปือ, สปป.ลาว",
+        btn_org_chart: "ดูภาพระบบการจัดตั้งภายในวัด",
+
+        about_sub: "เกี่ยวกับเรา",
+        about_title: "ประวัติความเป็นมาของวัด",
+        about_p1: "วัดเซกะพานกลาง ตั้งอยู่ในบ้านเซกะพาน เมืองสามัคคีไชย แขวงอัตตะปือ สปป.ลาว เป็นศาสนสถานที่สำคัญอันเป็นศูนย์รวมจิตใจของพุทธศาสนิกชนในพื้นที่แถบลุ่มน้ำเซกะพาน.",
+        about_p2: "วัดแห่งนี้เป็นศูนย์กลางในการประกอบพิธีกรรมทางพระพุทธศาสนา อบรมสั่งสอนศีลธรรม ตลอดจนสืบสานประเพณีอันดีงามของท้องถิ่นให้คงอยู่สืบไป.",
+
+        activities_sub: "กิจกรรม & งานบุญ",
+        activities_title: "กิจกรรมและงานบุญประเพณี",
+        activities_desc: "ภาพบรรยากาศการประกอบพิธีกรรมทางศาสนา และกิจกรรมภายในวัดเซกะพานกลาง.",
+        btn_view_gallery: "ดูรูปภาพทั้งหมด",
+
+        donation_sub: "ร่วมทำบุญ",
+        donation_title: "ร่วมทำบุญ / บริจาคสร้างบำรุงวัด",
+        donation_desc: "เชิญชวนพุทธศาสนิกชนร่วมทำบุญสมทบทุนตามกำลังศรัทธา เพื่อบูรณปฏิสังขรณ์เสนาสนะและพัฒนาวัดเซกะพานกลาง.",
+        bank_name: "บัญชี ธนาคารการค้าต่างประเทศลาว (BCEL)",
+        account_name_label: "ชื่อบัญชี: วัดเซกะพานกลาง ( Wat Sekaman Kang )",
+        account_no_label: "เลขที่บัญชี:",
+        btn_copy_acc: "คัดลอกเลขบัญชี",
+        acc_copied_alert: "คัดลอกเลขบัญชีสำเร็จแล้ว!",
+
+        contact_sub: "LOCATION & CONTACT",
+        contact_title: "ติดต่อเรา & แผนที่การเดินทาง",
+        contact_address_label: "ที่อยู่",
+        address_detail: "บ้านเซกะพาน, เมืองสามัคคีไชย, แขวงอัตตะปือ, สปป.ลาว",
+        contact_phone_label: "โทรศัพท์ / WhatsApp",
+        contact_email_label: "อีเมล",
+        btn_map: "ดูแผนที่ตำแหน่งวัด",
+
+        form_title: "ส่งข้อความ หรือ สอบถามข้อมูล",
+        form_name_label: "ชื่อ และ นามสกุล",
+        form_name_placeholder: "ตัวอย่าง: คุณ สมไชย",
+        form_phone_label: "เบอร์โทรศัพท์",
+        form_phone_placeholder: "020 XXXXXXXX",
+        form_message_label: "ข้อความที่ต้องการส่ง",
+        form_message_placeholder: "พิมพ์ข้อความของคุณที่นี่...",
+        form_submit_btn: "ส่งข้อความ",
+
+        lang_modal_title: "เลือกภาษา / Select Language",
+        map_modal_title: "แผนที่และการเดินทาง",
+        map_modal_heading: "แผนที่ตำแหน่ง อัตตะปือ เซกะพาน",
+        map_modal_desc: "ท่านสามารถเดินทางตามเส้นทางหลักหมายเลข 16A ริมแม่น้ำเซกะพาน.",
+        btn_google_map: "นำทางด้วย Google Maps",
+        org_modal_title: "ระบบการจัดตั้งภายในวัด",
+        org_modal_heading: "โครงสร้างการบริหารและบุคลากรภายในวัดเซกะพานกลาง",
+        modal_close_btn: "ปิด",
+
+        footer_copy: "© 2026 วัดเซกะพานกลาง ( Wat Sekaman Kang ). ขอสงวนลิขสิทธิ์ทั้งหมด.",
+        footer_dev: "พัฒนาโดย ทีมงานวัดเซกะพานกลาง"
+    },
+
+    // ==========================================
+    // 3. 🇬🇧 English
+    // ==========================================
+    en: {
+        announcement_text: "Welcome to <b>Wat Sekaman Kang</b>",
+        btn_listen_bell: "Listen Bell",
+        btn_listen_gong: "Listen Gong",
+        next_monk_day: "Next Monk Day: 15th Moon",
+        lang_btn_label: "3. 🇬🇧 English",
+
+        site_name: "Wat Sekaman Kang",
+        site_location: "Sekaman Village, Samakkixay District, Attapeu",
+        nav_home: "Home",
+        nav_about: "About Us",
+        nav_activities: "Activities",
+        nav_donation: "Donation",
+        nav_contact: "Contact Us",
+
+        hero_badge: "Center of Buddhist Faith",
+        hero_title: "Wat Sekaman Kang",
+        hero_subtitle: "Sekaman Village, Samakkixay District, Attapeu Province, Laos",
+        btn_org_chart: "View Organization Structure",
+
+        about_sub: "ABOUT US",
+        about_title: "History of the Temple",
+        about_p1: "Wat Sekaman Kang is located in Sekaman Village, Samakkixay District, Attapeu Province, Laos. It is a major Buddhist temple serving as a spiritual sanctuary for local communities.",
+        about_p2: "The temple serves as a center for religious ceremonies, moral teachings, and preserving local cultural traditions for future generations.",
+
+        activities_sub: "ACTIVITIES & EVENTS",
+        activities_title: "Temple Activities & Festivals",
+        activities_desc: "Atmosphere of religious ceremonies and events at Wat Sekaman Kang.",
+        btn_view_gallery: "View All Gallery",
+
+        donation_sub: "DONATION",
+        donation_title: "Make a Donation / Merit Making",
+        donation_desc: "We invite Buddhists to contribute according to their faith for the renovation and development of Wat Sekaman Kang.",
+        bank_name: "Banque Pour Le Commerce Exterieur Lao (BCEL)",
+        account_name_label: "Account Name: Wat Sekaman Kang",
+        account_no_label: "Account No:",
+        btn_copy_acc: "Copy Account Number",
+        acc_copied_alert: "Account number copied successfully!",
+
+        contact_sub: "LOCATION & CONTACT",
+        contact_title: "Contact Us & Location Map",
+        contact_address_label: "Address",
+        address_detail: "Sekaman Village, Samakkixay District, Attapeu Province, Laos",
+        contact_phone_label: "Phone / WhatsApp",
+        contact_email_label: "Email",
+        btn_map: "View Location Map",
+
+        form_title: "Send Us a Message",
+        form_name_label: "Full Name",
+        form_name_placeholder: "e.g. Mr. Somchai",
+        form_phone_label: "Phone Number",
+        form_phone_placeholder: "020 XXXXXXXX",
+        form_message_label: "Message",
+        form_message_placeholder: "Type your message here...",
+        form_submit_btn: "Send Message",
+
+        lang_modal_title: "Select Language",
+        map_modal_title: "Map & Directions",
+        map_modal_heading: "Attapeu Sekaman Location Map",
+        map_modal_desc: "You can travel along Route 16A along the Sekaman River.",
+        btn_google_map: "Navigate with Google Maps",
+        org_modal_title: "Organization Structure",
+        org_modal_heading: "Management Structure & Members of Wat Sekaman Kang",
+        modal_close_btn: "Close",
+
+        footer_copy: "© 2026 Wat Sekaman Kang. All rights reserved.",
+        footer_dev: "Developed by Wat Sekaman Kang Team"
+    }
+};
+
+// =========================================================================
+// ฟังก์ชันสำหรับใช้เปลี่ยนภาษาบนหน้าเว็บ (วางในแท็ก <script> ได้เลย)
+// =========================================================================
+function changeLanguage(lang) {
+    localStorage.setItem('preferred_lang', lang);
+
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (translations[lang] && translations[lang][key]) {
+            // ถ้าเป็น input หรือ textarea ให้เปลี่ยน placeholder
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations[lang][key];
+            } else {
+                element.innerHTML = translations[lang][key];
+            }
+        }
+    });
+}
     </script>
+    
 </body>
 </html>
