@@ -2182,6 +2182,131 @@ document.addEventListener('DOMContentLoaded', () => {
     initHomeGallerySlider();
 });
     </script>
+    <script>
+// 1. กำหนดข้อมูลภาษาสำหรับปุ่มควบคุมสไลด์
+const HOME_SLIDE_LABELS = {
+    lo: { previous: 'ຮູບก่อนหน้า', next: 'ຮູບถัดไป', play: 'ຫຼິ້ນສະໄລດ໌', pause: 'ຢຸດສະໄລດ໌' },
+    en: { previous: 'Previous', next: 'Next', play: 'Play', pause: 'Pause' }
+};
+
+// 2. กำหนดรายการรูปภาพและข้อความสไลด์ (ใส่รูปและคำอธิบายของคุณที่นี่)
+const HOME_GALLERY_SLIDES = [
+    {
+        src: 'images/events/event1.jpg',
+        lo: ['ພາບກິດຈະກຳຂອງວັດ', 'ຊົມພາບບັນຍາກາດງານບຸນ ແລະ ກິດຈະກຳພາຍໃນວັດ'],
+        en: ['Temple Event Highlights', 'Enjoy the atmosphere of temple festivals and activities']
+    },
+    {
+        src: 'images/events/event2.jpg',
+        lo: ['ກິດຈະກຳເຮັດບຸນຕັກບາດ', 'ພາບບັນຍາກາດການເຮັດບຸນຕັກບາດຂອງອອກຕົນຍາດໂຍມ'],
+        en: ['Alms Offering Ceremony', 'Devotees participating in the morning alms giving']
+    },
+    {
+        src: 'images/events/event3.jpg',
+        lo: ['ພິທີວຽນທຽນ', 'ພາບບັນຍາກາດພິທີວຽນທຽນໃນວັນສໍາຄັນທາງພຸດທະສາສະຫນາ'],
+        en: ['Candle Light Procession', 'Atmosphere during the sacred candlelight procession']
+    }
+];
+
+// 3. ระบบควบคุม สไลด์โชว์
+let homeSlideIndex = 0;
+let homeSlideTimer;
+let homeSlidePaused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let homeSlideTouchStart = 0;
+
+function getHomeSlideLanguage() {
+    const lang = localStorage.getItem('preferred_lang') || 'lo';
+    return (HOME_GALLERY_SLIDES[homeSlideIndex] && HOME_GALLERY_SLIDES[homeSlideIndex][lang]) ? lang : 'lo';
+}
+
+function updateHomeGallerySlide(index) {
+    if (!HOME_GALLERY_SLIDES || HOME_GALLERY_SLIDES.length === 0) return;
+
+    homeSlideIndex = (index + HOME_GALLERY_SLIDES.length) % HOME_GALLERY_SLIDES.length;
+    const slide = HOME_GALLERY_SLIDES[homeSlideIndex];
+    const language = getHomeSlideLanguage();
+    const labels = HOME_SLIDE_LABELS[language] || HOME_SLIDE_LABELS['lo'];
+
+    const image = document.getElementById('homeSlideImage');
+    const title = document.getElementById('homeSlideTitle');
+    const description = document.getElementById('homeSlideDescription');
+    const counter = document.getElementById('homeSlideCounter');
+    const pause = document.getElementById('homeSlidePause');
+    const previous = document.getElementById('homeSlidePrevious');
+    const next = document.getElementById('homeSlideNext');
+
+    if (!image || !title || !description || !counter || !pause) return;
+
+    image.classList.add('is-changing');
+    window.setTimeout(() => {
+        image.src = slide.src;
+        image.alt = slide[language] ? slide[language][0] : '';
+        image.classList.remove('is-changing');
+    }, 140);
+
+    image.onerror = () => { 
+        image.onerror = null; 
+        image.src = 'images/events/event1.jpg'; // รูปสำรองหากโหลดไม่สำเร็จ
+    };
+
+    title.textContent = slide[language] ? slide[language][0] : '';
+    description.textContent = slide[language] ? slide[language][1] : '';
+    counter.textContent = `${String(homeSlideIndex + 1).padStart(2, '0')} / ${String(HOME_GALLERY_SLIDES.length).padStart(2, '0')}`;
     
+    if (previous) previous.setAttribute('aria-label', labels.previous);
+    if (next) next.setAttribute('aria-label', labels.next);
+    pause.textContent = homeSlidePaused ? labels.play : labels.pause;
+
+    resetHomeSlideTimer();
+}
+
+function resetHomeSlideTimer() {
+    window.clearInterval(homeSlideTimer);
+    if (!homeSlidePaused) {
+        homeSlideTimer = window.setInterval(() => updateHomeGallerySlide(homeSlideIndex + 1), 7000);
+    }
+}
+
+function initHomeGallerySlider() {
+    const previous = document.getElementById('homeSlidePrevious');
+    const next = document.getElementById('homeSlideNext');
+    const pause = document.getElementById('homeSlidePause');
+    const hero = document.getElementById('home-gallery-slideshow');
+
+    if (!previous || !next || !pause || !hero) return;
+
+    previous.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex - 1));
+    next.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex + 1));
+    pause.addEventListener('click', () => {
+        homeSlidePaused = !homeSlidePaused;
+        updateHomeGallerySlide(homeSlideIndex);
+    });
+
+    hero.addEventListener('touchstart', event => { 
+        homeSlideTouchStart = event.changedTouches[0].screenX; 
+    }, { passive: true });
+
+    hero.addEventListener('touchend', event => {
+        const distance = event.changedTouches[0].screenX - homeSlideTouchStart;
+        if (Math.abs(distance) > 45) {
+            updateHomeGallerySlide(homeSlideIndex + (distance > 0 ? -1 : 1));
+        }
+    }, { passive: true });
+
+    document.addEventListener('keydown', event => {
+        if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(event.target.tagName)) return;
+        if (event.key === 'ArrowLeft') updateHomeGallerySlide(homeSlideIndex - 1);
+        if (event.key === 'ArrowRight') updateHomeGallerySlide(homeSlideIndex + 1);
+    });
+
+    // เริ่มแสดงผลรูปแรก
+    updateHomeGallerySlide(0);
+}
+
+// 4. สั่งเริ่มระบบเมื่อหน้าเว็บโหลดเสร็จ
+document.addEventListener('DOMContentLoaded', () => {
+    initHomeGallerySlider();
+});
+</script>
 </body>
 </html>
