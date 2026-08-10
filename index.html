@@ -1958,17 +1958,20 @@ autoTranslations.en.quotes = [
     "Suffering follows those with an unwholesome mind like a wheel follows an ox's hoof.",
     "Freedom from mental illness is freedom from defilements."
 ];
+     // --- 1. ระบบจัดการภาษา ---
 
 function getPreferredLanguage() {
     return localStorage.getItem('preferred_lang') || 'lo';
 }
 
 function translateText(text, lang = getPreferredLanguage()) {
+    if (typeof autoTranslations === 'undefined') return text;
     const dict = autoTranslations[lang];
     return dict && typeof dict[text] === 'string' ? dict[text] : text;
 }
 
 function translateDom(root, lang = getPreferredLanguage()) {
+    if (typeof autoTranslations === 'undefined') return;
     const dict = autoTranslations[lang];
     if (!dict || !root) return;
 
@@ -2018,7 +2021,6 @@ function translateHtml(html, lang = getPreferredLanguage()) {
     return template.innerHTML;
 }
 
-// 2. ฟังก์ชันเปิด Pop-up แสดงตัวเลือก 2 ภาษา
 function openLangModal() {
     const oldModal = document.getElementById('custom-lang-modal');
     if (oldModal) oldModal.remove();
@@ -2044,13 +2046,11 @@ function openLangModal() {
     document.body.insertAdjacentHTML('beforeend', translateHtml(modalHtml));
 }
 
-// 3. ปิด Pop-up
 function closeLangModalCustom() {
     const modal = document.getElementById('custom-lang-modal');
     if (modal) modal.remove();
 }
 
-// 4. ฟังก์ชันสลับภาษา
 function selectLanguage(lang, label) {
     const labelEl = document.getElementById('current-lang-label');
     if (labelEl) labelEl.innerText = label;
@@ -2060,64 +2060,71 @@ function selectLanguage(lang, label) {
 
     closeLangModalCustom();
 
-    // ถ้าเลือกภาษาลาว ให้รีโหลดหน้าเว็บกลับค่าเริ่มต้น
     if (lang === 'lo') {
         location.reload();
         return;
     }
 
-    if (!autoTranslations[lang]) return;
+    if (typeof autoTranslations === 'undefined' || !autoTranslations[lang]) return;
     document.documentElement.lang = lang;
     document.title = translateText(document.title, lang);
     translateDom(document.body, lang);
-    renderDevotees();
+    
+    // ตรวจสอบความปลอดภัยก่อนเรียกใช้งาน renderDevotees
+    if (typeof renderDevotees === 'function') {
+        renderDevotees();
+    }
 }
 
-// 5. โหลดภาษาเดิมที่เลือกไว้อัตโนมัติเมื่อเปิดเว็บ
-document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('preferred_lang') || 'lo';
-    const savedLabel = localStorage.getItem('preferred_lang_label') || '1. 🇱🇦 ພາສາລາວ';
-    if (savedLang !== 'lo') {
-        setTimeout(() => {
-            selectLanguage(savedLang, savedLabel);
-        }, 300);
-    }
-});
-        let homeSlideIndex = 0;
+// --- 2. ระบบ Home Gallery Slider ---
+
+let homeSlideIndex = 0;
 let homeSlideTimer;
 let homeSlidePaused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let homeSlideTouchStart = 0;
 
 function getHomeSlideLanguage() {
+    if (typeof HOME_GALLERY_SLIDES === 'undefined' || !HOME_GALLERY_SLIDES[homeSlideIndex]) return 'lo';
     const language = getPreferredLanguage();
     return HOME_GALLERY_SLIDES[homeSlideIndex][language] ? language : 'lo';
 }
 
 function updateHomeGallerySlide(index) {
+    if (typeof HOME_GALLERY_SLIDES === 'undefined' || !HOME_GALLERY_SLIDES.length) return;
+
     homeSlideIndex = (index + HOME_GALLERY_SLIDES.length) % HOME_GALLERY_SLIDES.length;
     const slide = HOME_GALLERY_SLIDES[homeSlideIndex];
     const language = getHomeSlideLanguage();
-    const labels = HOME_SLIDE_LABELS[language];
+    const labels = (typeof HOME_SLIDE_LABELS !== 'undefined' && HOME_SLIDE_LABELS[language]) 
+        ? HOME_SLIDE_LABELS[language] 
+        : { previous: 'Previous', next: 'Next', play: 'Play', pause: 'Pause' };
+
     const image = document.getElementById('homeSlideImage');
     const title = document.getElementById('homeSlideTitle');
     const description = document.getElementById('homeSlideDescription');
     const counter = document.getElementById('homeSlideCounter');
     const pause = document.getElementById('homeSlidePause');
+    const previous = document.getElementById('homeSlidePrevious');
+    const next = document.getElementById('homeSlideNext');
+
     if (!image || !title || !description || !counter || !pause) return;
 
     image.classList.add('is-changing');
     window.setTimeout(() => {
         image.src = slide.src;
-        image.alt = slide[language][0];
+        image.alt = slide[language] ? slide[language][0] : '';
         image.classList.remove('is-changing');
     }, 140);
     image.onerror = () => { image.onerror = null; image.src = 'wat-logo.jpg'; };
-    title.textContent = slide[language][0];
-    description.textContent = slide[language][1];
+
+    title.textContent = slide[language] ? slide[language][0] : '';
+    description.textContent = slide[language] ? slide[language][1] : '';
     counter.textContent = `${String(homeSlideIndex + 1).padStart(2, '0')} / ${String(HOME_GALLERY_SLIDES.length).padStart(2, '0')}`;
-    document.getElementById('homeSlidePrevious').setAttribute('aria-label', labels.previous);
-    document.getElementById('homeSlideNext').setAttribute('aria-label', labels.next);
+    
+    if (previous) previous.setAttribute('aria-label', labels.previous);
+    if (next) next.setAttribute('aria-label', labels.next);
     pause.textContent = homeSlidePaused ? labels.play : labels.pause;
+
     resetHomeSlideTimer();
 }
 
@@ -2132,22 +2139,48 @@ function initHomeGallerySlider() {
     const pause = document.getElementById('homeSlidePause');
     const hero = document.getElementById('home-gallery-slideshow');
     if (!previous || !next || !pause || !hero) return;
+
     previous.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex - 1));
     next.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex + 1));
     pause.addEventListener('click', () => {
         homeSlidePaused = !homeSlidePaused;
         updateHomeGallerySlide(homeSlideIndex);
     });
-    hero.addEventListener('touchstart', event => { homeSlideTouchStart = event.changedTouches[0].screenX; }, { passive: true });
+
+    hero.addEventListener('touchstart', event => { 
+        homeSlideTouchStart = event.changedTouches[0].screenX; 
+    }, { passive: true });
+
     hero.addEventListener('touchend', event => {
         const distance = event.changedTouches[0].screenX - homeSlideTouchStart;
         if (Math.abs(distance) > 45) updateHomeGallerySlide(homeSlideIndex + (distance > 0 ? -1 : 1));
     }, { passive: true });
+
     document.addEventListener('keydown', event => {
         if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(event.target.tagName)) return;
         if (event.key === 'ArrowLeft') updateHomeGallerySlide(homeSlideIndex - 1);
         if (event.key === 'ArrowRight') updateHomeGallerySlide(homeSlideIndex + 1);
     });
+
+    // แสดงผลภาพแรกทันทีเมื่อเรียกใช้
+    updateHomeGallerySlide(0);
+}
+
+// --- 3. สั่งประมวลผลเมื่อ DOM โหลดเสร็จสมบูรณ์ ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. โหลดระบบภาษา
+    const savedLang = localStorage.getItem('preferred_lang') || 'lo';
+    const savedLabel = localStorage.getItem('preferred_lang_label') || '1. 🇱🇦 ພາສາລາວ';
+    if (savedLang !== 'lo') {
+        setTimeout(() => {
+            selectLanguage(savedLang, savedLabel);
+        }, 300);
+    }
+
+    // 2. เรียกใช้งาน Slider
+    initHomeGallerySlider();
+});
     </script>
     
 </body>
