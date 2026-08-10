@@ -82,6 +82,79 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #B8860B;
         }
+           .gallery-slider {
+    overflow: hidden;
+    border: 1px solid rgba(212, 175, 55, .5);
+    border-radius: 1.5rem;
+    background: #2D080E;
+    box-shadow: 0 22px 50px rgba(45, 8, 14, .18);
+}
+.gallery-slide-stage { position: relative; min-height: 34rem; overflow: hidden; }
+#homeSlideImage {
+    width: 100%;
+    height: 34rem;
+    object-fit: cover;
+    opacity: .9;
+    transition: opacity .45s ease, transform 6s ease;
+}
+#homeSlideImage.is-changing { opacity: .2; transform: scale(1.035); }
+.gallery-slide-wash { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(45, 8, 14, .86), rgba(45, 8, 14, .28) 70%, rgba(45, 8, 14, .1)); pointer-events: none; }
+.gallery-slide-content { position: absolute; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; max-width: 42rem; }
+.gallery-slide-caption {
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(243, 229, 171, .3);
+    border-radius: 1rem;
+    background: rgba(45, 8, 14, .55);
+    backdrop-filter: blur(8px);
+}
+.gallery-slide-caption strong { display: block; color: #F3E5AB; font-size: clamp(1.1rem, 3vw, 1.5rem); }
+.gallery-slide-caption span { display: block; margin-top: .15rem; color: rgba(255, 251, 235, .9); font-size: .86rem; }
+.gallery-slide-tools {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .55rem;
+    margin-top: .85rem;
+}
+.gallery-slide-btn {
+    display: inline-grid;
+    width: 2.6rem;
+    height: 2.6rem;
+    place-items: center;
+    color: #F3E5AB;
+    border: 1px solid rgba(243, 229, 171, .65);
+    border-radius: 999px;
+    background: rgba(45, 8, 14, .58);
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: transform .2s ease, background .2s ease;
+}
+.gallery-slide-btn:hover { transform: translateY(-2px); background: #4A0E17; }
+.gallery-slide-status {
+    min-width: 4.7rem;
+    color: #F3E5AB;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+.gallery-slide-pause {
+    padding: .55rem .8rem;
+    color: #F3E5AB;
+    border: 1px solid rgba(243, 229, 171, .45);
+    border-radius: 999px;
+    background: rgba(45, 8, 14, .58);
+    font-size: .73rem;
+    font-weight: 700;
+    transition: background .2s ease;
+}
+.gallery-slide-pause:hover { background: #4A0E17; }
+@media (max-width: 640px) {
+    .gallery-slide-stage, #homeSlideImage { min-height: 27rem; height: 27rem; }
+    .gallery-slide-content { right: 1rem; bottom: 1rem; left: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #homeSlideImage, .gallery-slide-btn, .gallery-slide-pause { transition: none; }
+}
     </style>
 </head>
 <body class="antialiased selection:bg-laoGold selection:text-laoMaroonDark">
@@ -324,7 +397,27 @@
             </div>
         </div>
     </section>
-
+     <!-- Home Gallery Slideshow -->
+<section id="home-gallery-slideshow" class="py-4 pb-20 px-4 max-w-6xl mx-auto">
+    <div class="gallery-slider">
+        <div class="gallery-slide-stage">
+            <img id="homeSlideImage" src="images/events/event1.jpg" alt="">
+            <div class="gallery-slide-wash"></div>
+            <div class="gallery-slide-content">
+                <div class="gallery-slide-caption" aria-live="polite">
+                    <strong id="homeSlideTitle">ພາບກິດຈະກຳຂອງວັດ</strong>
+                    <span id="homeSlideDescription">ຊົມພາບບັນຍາກາດງານບຸນ ແລະ ກິດຈະກຳພາຍໃນວັດ</span>
+                </div>
+                <div class="gallery-slide-tools" aria-label="Gallery slideshow controls">
+                    <button id="homeSlidePrevious" type="button" class="gallery-slide-btn" aria-label="Previous image">‹</button>
+                    <span id="homeSlideCounter" class="gallery-slide-status">01 / 10</span>
+                    <button id="homeSlideNext" type="button" class="gallery-slide-btn" aria-label="Next image">›</button>
+                    <button id="homeSlidePause" type="button" class="gallery-slide-pause">ຢຸດສະໄລດ໌</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Sacred Highlights Section -->
     <section id="sacred" class="py-20 bg-amber-50 border-y border-laoGold/20 px-4">
         <div class="max-w-7xl mx-auto">
@@ -1990,6 +2083,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 });
+        let homeSlideIndex = 0;
+let homeSlideTimer;
+let homeSlidePaused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let homeSlideTouchStart = 0;
+
+function getHomeSlideLanguage() {
+    const language = getPreferredLanguage();
+    return HOME_GALLERY_SLIDES[homeSlideIndex][language] ? language : 'lo';
+}
+
+function updateHomeGallerySlide(index) {
+    homeSlideIndex = (index + HOME_GALLERY_SLIDES.length) % HOME_GALLERY_SLIDES.length;
+    const slide = HOME_GALLERY_SLIDES[homeSlideIndex];
+    const language = getHomeSlideLanguage();
+    const labels = HOME_SLIDE_LABELS[language];
+    const image = document.getElementById('homeSlideImage');
+    const title = document.getElementById('homeSlideTitle');
+    const description = document.getElementById('homeSlideDescription');
+    const counter = document.getElementById('homeSlideCounter');
+    const pause = document.getElementById('homeSlidePause');
+    if (!image || !title || !description || !counter || !pause) return;
+
+    image.classList.add('is-changing');
+    window.setTimeout(() => {
+        image.src = slide.src;
+        image.alt = slide[language][0];
+        image.classList.remove('is-changing');
+    }, 140);
+    image.onerror = () => { image.onerror = null; image.src = 'wat-logo.jpg'; };
+    title.textContent = slide[language][0];
+    description.textContent = slide[language][1];
+    counter.textContent = `${String(homeSlideIndex + 1).padStart(2, '0')} / ${String(HOME_GALLERY_SLIDES.length).padStart(2, '0')}`;
+    document.getElementById('homeSlidePrevious').setAttribute('aria-label', labels.previous);
+    document.getElementById('homeSlideNext').setAttribute('aria-label', labels.next);
+    pause.textContent = homeSlidePaused ? labels.play : labels.pause;
+    resetHomeSlideTimer();
+}
+
+function resetHomeSlideTimer() {
+    window.clearInterval(homeSlideTimer);
+    if (!homeSlidePaused) homeSlideTimer = window.setInterval(() => updateHomeGallerySlide(homeSlideIndex + 1), 7000);
+}
+
+function initHomeGallerySlider() {
+    const previous = document.getElementById('homeSlidePrevious');
+    const next = document.getElementById('homeSlideNext');
+    const pause = document.getElementById('homeSlidePause');
+    const hero = document.getElementById('home-gallery-slideshow');
+    if (!previous || !next || !pause || !hero) return;
+    previous.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex - 1));
+    next.addEventListener('click', () => updateHomeGallerySlide(homeSlideIndex + 1));
+    pause.addEventListener('click', () => {
+        homeSlidePaused = !homeSlidePaused;
+        updateHomeGallerySlide(homeSlideIndex);
+    });
+    hero.addEventListener('touchstart', event => { homeSlideTouchStart = event.changedTouches[0].screenX; }, { passive: true });
+    hero.addEventListener('touchend', event => {
+        const distance = event.changedTouches[0].screenX - homeSlideTouchStart;
+        if (Math.abs(distance) > 45) updateHomeGallerySlide(homeSlideIndex + (distance > 0 ? -1 : 1));
+    }, { passive: true });
+    document.addEventListener('keydown', event => {
+        if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(event.target.tagName)) return;
+        if (event.key === 'ArrowLeft') updateHomeGallerySlide(homeSlideIndex - 1);
+        if (event.key === 'ArrowRight') updateHomeGallerySlide(homeSlideIndex + 1);
+    });
+    updateHomeGallerySlide(0);
+}
+
+// เรียกใช้งานหลังโหลดหน้าเสร็จ
+initHomeGallerySlider();
     </script>
     
 </body>
